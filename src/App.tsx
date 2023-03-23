@@ -1,9 +1,18 @@
-import './App.css';
-import RouteHandler from './routings';
+import { ConfigProvider } from "antd";
+import "./App.css";
+import RouteHandler from "./routings";
 
 function App() {
   return (
-    <RouteHandler />
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#15CC2E",
+        },
+      }}
+    >
+      <RouteHandler />
+    </ConfigProvider>
   );
 }
 
