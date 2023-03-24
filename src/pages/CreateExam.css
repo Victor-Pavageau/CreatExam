@@ -1,0 +1,7 @@
+.red {
+  @apply text-red-500
+}
+
+.green {
+  @apply text-green-500
+}

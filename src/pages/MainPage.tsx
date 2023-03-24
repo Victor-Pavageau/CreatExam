@@ -1,7 +1,10 @@
 import { Button } from "antd";
-import YouTube, { YouTubeProps } from "react-youtube";
+import { useNavigate } from "react-router-dom";
+import YouTube from "react-youtube";
 
 function MainPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex justify-center">
       <div>
@@ -13,13 +16,16 @@ function MainPage() {
         </div>
         <div className="flex justify-center mt-10">
           <Button
-            className="bg-[#15CC2E] border-none flex justify-center items-center"
+            className="border-none flex justify-center items-center"
+            type="primary"
             size="large"
+            onClick={() => { navigate("create-exam") }}
           >
-            <div className="bg-[#15CC2E]">Try CreatExam for free</div>
+            <div className="bg-transparent">Try CreatExam for free</div>
           </Button>
         </div>
-        <YouTube videoId="--khbXchTeE"></YouTube>
+        <div className="mt-10">
+          <YouTube videoId="_eHjifELI-k"></YouTube></div>
       </div>
     </div>
   );

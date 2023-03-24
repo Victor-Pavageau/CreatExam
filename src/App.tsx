@@ -1,8 +1,17 @@
 import { ConfigProvider } from "antd";
 import "./App.css";
 import RouteHandler from "./routings";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      }
+    }
+  });
+
   return (
     <ConfigProvider
       theme={{
@@ -11,7 +20,9 @@ function App() {
         },
       }}
     >
-      <RouteHandler />
+      <QueryClientProvider client={queryClient}>
+        <RouteHandler />
+      </QueryClientProvider>
     </ConfigProvider>
   );
 }
