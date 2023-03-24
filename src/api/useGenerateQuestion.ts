@@ -32,7 +32,7 @@ const fetchData = async (query?: QueryType): Promise<QueryResult> => {
     headers: {
       "Content-Type": "application/json",
       Authorization:
-        "Bearer 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",
+        "Bearer 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",
     },
     data: {
       model: "text-davinci-003",
