@@ -31,8 +31,7 @@ const fetchData = async (query?: QueryType): Promise<QueryResult> => {
     url: "https://api.openai.com/v1/completions",
     headers: {
       "Content-Type": "application/json",
-      Authorization:
-        "Bearer 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",
+      Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
     },
     data: {
       model: "text-davinci-003",
