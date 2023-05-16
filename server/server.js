@@ -1,40 +1,55 @@
-const express = require("express");
-const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
-const mongoose = require("mongoose");
 
-const passport = require("./passport/setup");
-const auth = require("./routes/auth");
-
-const app = express();
 const PORT = 5000;
-const MONGO_URI = "mongodb://127.0.0.1:27017/Test";
+const MONGO_URI = "mongodb://127.0.0.1:27017/?retryWrites=true&serverSelectionTimeoutMS=2000&connectTimeoutMS=10000";
 
-mongoose
-    .connect(MONGO_URI, { useNewUrlParser: true })
-    .then(console.log(`MongoDB connected ${MONGO_URI}`))
-    .catch(err => console.log(err));
+require('dotenv').config();
+const mongoose = require('mongoose');
+const passport = require('passport');
+const express = require('express');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const expressLayouts = require('express-ejs-layouts');
+const indexRoute = require('./routes/index');
+const userRoute = require('./routes/user');
 
-// Bodyparser middleware, extended false does not allow nested payloads
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+require('./config/passport')(passport);
+const app = express();
 
-// Express Session
-app.use(
-    session({
-        secret: "very secret this is",
-        resave: false,
-        saveUninitialized: true,
-        store: new MongoStore({ mongooseConnection: mongoose.connection })
-    })
-);
+const morgan = require('morgan');
+mongoose.connect(process.env.MONGO_URI, { useUnifiedTopology: true, useNewUrlParser: true }, () => console.log('Mongodb is connected'));
 
-// Passport middleware
+
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.use(morgan('dev'));
+
+// SESSION MIDDLEWARE 
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true }, // THIS WON'T WORK WITHOUT HTTPS
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
+
+// PASSPORT MIDDLEWARE 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
-app.use("/api/auth", auth);
-app.get("/", (req, res) => res.send("Good monring sunshine!"));
 
-app.listen(PORT, () => console.log(`Backend listening on port ${PORT}!`));
+app.use((req, res, next)=>{
+    if(req.isAuthenticated){
+        console.log("Now we can set global variable");
+        res.locals.user = req.user;
+        next();
+    }else{
+        console.log("Now we can not set global variable");
+        res.locals.user = null;
+        next();
+    }
+});
+
+
+app.use('/', indexRoute);
+app.use('/auth', userRoute);
+app.listen(PORT, () => console.log('Server is running on: ' + PORT));
