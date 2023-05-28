@@ -1,99 +1,144 @@
-import { Button, Input } from "antd";
+import { Button, Col, Input, Row } from "antd";
+import "./TestUI.css";
+import { GoSettings } from "react-icons/go";
+import { useState } from "react";
 import { nanoid } from "nanoid";
-import { useState, useEffect } from "react";
-import { useGenerateQuestion } from "../api/useGenerateQuestion";
 
-type PropositionType = {
+type Proposition = {
+  isGoodAnswer: boolean;
   proposition: string;
-  isCorrect: boolean;
-}
+};
 
-type QuestionType = {
-  question?: string;
-  propositions?: PropositionType[];
-}
+type Question = {
+  question: string;
+  propositions: Proposition[];
+};
+
+const test: Question[] = [
+  {
+    question: "Quelle est la population de Paris en 2020 ?",
+    propositions: [
+      {
+        isGoodAnswer: false,
+        proposition: "500 000 habitants.",
+      },
+      {
+        isGoodAnswer: false,
+        proposition: "12 000 000 habitants.",
+      },
+      {
+        isGoodAnswer: true,
+        proposition: "2 500 000 habitants.",
+      },
+      {
+        isGoodAnswer: false,
+        proposition: "7 000 000 habitants.",
+      },
+    ],
+  },
+  {
+    question: "Quelle est la capitale du Royaume-Uni ?",
+    propositions: [
+      {
+        isGoodAnswer: true,
+        proposition: "Londres.",
+      },
+      {
+        isGoodAnswer: false,
+        proposition: "Edinburgh.",
+      },
+      {
+        isGoodAnswer: false,
+        proposition: "Manchester.",
+      },
+      {
+        isGoodAnswer: false,
+        proposition: "Cardiff.",
+      },
+    ],
+  },
+];
 
 function TestUI() {
-  const [querySubject, setQuerySubject] = useState("")
-  const [tempInputValue, setTempInputValue] = useState("")
-  const [questionArray, setQuestionArray] = useState<QuestionType[]>([])
-  const { data } = useGenerateQuestion({ subject: querySubject });
+  const [selectedQuestionID, setSelectedQuestionID] = useState(0);
 
-  const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-
-  useEffect(() => {
-    formatQuery(data?.choices[0].text)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
-
-  useEffect(() => {
-    console.log(questionArray);
-  }, [questionArray])
-
-
-  const formatQuery = (queryResponse?: string) => {
-    if (queryResponse) {
-      const queryResponseWithoutQuestion = queryResponse.substring(queryResponse.indexOf("?") + 1);
-      const numberOfPropositions = queryResponseWithoutQuestion.split(") ").length;
-      if (numberOfPropositions > 0 && numberOfPropositions <= 10) {
-        const propositionArray: PropositionType[] = [];
-        for (let i = 0; i < numberOfPropositions; i++) {
-
-          if (i < numberOfPropositions - 2) {
-            let proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[i]}) `), queryResponse.indexOf(`${alphabet[i + 1]}) `) - 1);
-            propositionArray.push({
-              proposition: proposition,
-              isCorrect: proposition.substring(proposition.indexOf("["), proposition.indexOf("]") + 1) === "[Correcte]",
-            })
-          }
-          else if (i !== numberOfPropositions - 1) {
-            let proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[numberOfPropositions - 2]}) `));
-            propositionArray.push({
-              proposition: proposition,
-              isCorrect: proposition.substring(proposition.indexOf("["), proposition.indexOf("]") + 1) === "[Correcte]",
-            })
-          }
-        }
-        setQuestionArray([...questionArray, {
-          question: queryResponse.substring(0, queryResponse.indexOf("?") + 1), propositions: propositionArray,
-        }])
-      }
+  const truncateLongQuestion = (string: string) => {
+    if (string.length > 70) {
+      return string.slice(0, 50) + "...";
     }
-  }
+    return string;
+  };
 
   return (
-    <div className="flex justify-center">
-      <div>
-        <h1 className="max-w-lg font-semibold text-center mx-auto">
-          Create the MCQ you want.
-        </h1>
-        <div className="flex gap-3">
-          <Input placeholder="Enter the main subject of your MCQ" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }}></Input>
-          <Button size="large" type="primary" onClick={() => { setQuerySubject(tempInputValue) }}>
-            <div className="font-semibold bg-transparent">Generate</div>
-          </Button>
+    <>
+      <div className="flex justify-center">
+        <div>
+          <h1 className="max-w-lg font-semibold text-center mx-auto">
+            Create the MCQ you want.
+          </h1>
+          <div className="flex gap-3">
+            <Input placeholder="Enter the subject of your MCQ"></Input>
+            <Button size="large" type="primary">
+              <div className="font-semibold bg-transparent">Generate</div>
+            </Button>
+          </div>
         </div>
-        <div className="max-w-lg font-semibold text-center mx-auto mt-10">
-          {questionArray.map((question: QuestionType) => (
-            <div key={nanoid()}>
-              <h3>
-                {question.question}
-              </h3>
-              {question.propositions?.map((proposition: PropositionType) => (
-                <div key={nanoid()} className="text-start flex flex-row gap-3">
-                  <div className={`${proposition.isCorrect ? "green" : "red"}`}>
-                    {proposition.proposition.substring(0, proposition.proposition.indexOf(") ") + 1)}
-                  </div>
-                  <div>
-                    {proposition.proposition.substring(proposition.proposition.indexOf(") ") + 1, proposition.proposition.indexOf(" ["))}
-                  </div>
+      </div>
+      <Row className="mt-10">
+        <Col span={6}>
+          <div className="flex justify-center">
+            <div className="flex justify-center flex-col gap-y-3">
+              {test.map((questionTest, id) => (
+                <div
+                  key={nanoid()}
+                  className="border-2 border-solid border-white/40 p-5 rounded-md mb-3 flex gap-3"
+                >
+                  <div>{id + 1}.</div>
+                  {truncateLongQuestion(questionTest.question)}
                 </div>
               ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
+          </div>
+        </Col>
+        <Col span={12}>
+          <div className="flex justify-center">
+            <div className="flex flex-col gap-y-3 py-3 mt-3 rounded-md mb-5">
+              <div className="border-2 border-solid border-white/20 p-5 rounded-md mb-3 flex justify-between">
+                <div className="flex justify-center items-center">Question</div>
+                <div className="flex justify-center items-center">
+                  <Button
+                    type="text"
+                    className="flex justify-center items-center"
+                  >
+                    <GoSettings
+                      size={20}
+                      onClick={() => {
+                        alert("edit the question");
+                      }}
+                    />
+                  </Button>
+                </div>
+              </div>
+              <div className="border border-solid border-white/20 p-3 rounded-md">
+                Proposition A
+              </div>
+              <div className="border border-solid border-white/20 p-3 rounded-md">
+                Proposition B
+              </div>
+              <div className="border border-solid border-white/20 p-3 rounded-md">
+                Proposition C
+              </div>
+              <div className="border border-solid border-white/20 p-3 rounded-md">
+                Proposition D
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col span={6}>
+          <div className="flex justify-center">Edit pannel</div>
+        </Col>
+      </Row>
+    </>
   );
 }
 
