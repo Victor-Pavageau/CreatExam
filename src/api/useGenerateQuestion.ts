@@ -35,7 +35,33 @@ const fetchData = async (query?: QueryType): Promise<QueryResult> => {
     },
     data: {
       model: "text-davinci-003",
-      prompt: `Créer une question de QCM sur ${query?.subject} en suivant ce format : Question ? A) Réponse A. [Correcte/Incorrecte] B) Réponse B. [Correcte/Incorrecte] C) Réponse C. [Correcte/Incorrecte] D) Réponse D. [Correcte/Incorrecte]`,
+      prompt: `Act as a teacher. You will write a MCQ about ${query?.subject}.
+      You will follow this format: 
+      
+      [START QUESTION] Here is the question [END QUESTION]
+      
+      [START CHOICE1] Here is the first choice, which is wrong [END CHOICE1]
+      [START CHOICE2] Here is the second choice, which is true [END CHOICE2]
+      [START CHOICE3] Here is the third choice, which is wrong [END CHOICE3]
+      [START CHOICE4] Here is the fourth choice, which is wrong [END CHOICE4]
+      
+      [GOOD CHOICE: ID OF THE GOOD CHOICE]
+      
+      Here's is an example of a good answer with the subject Paris:
+      
+      [START QUESTION] What is the capital city of France?
+      [END QUESTION]
+      
+      [START CHOICE1] Berlin
+      [END CHOICE1]
+      [START CHOICE2] Paris
+      [END CHOICE2]
+      [START CHOICE3] Rome
+      [END CHOICE3]
+      [START CHOICE4] London
+      [END CHOICE4]
+      
+      [GOOD CHOICE: 2]`,
       max_tokens: 4000,
       temperature: 1,
     },
