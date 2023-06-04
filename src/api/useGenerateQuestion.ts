@@ -3,6 +3,7 @@ import axios from "axios";
 
 type QueryType = {
   subject: string;
+  language: string;
 };
 
 type ChoiceResponse = {
@@ -49,17 +50,12 @@ const fetchData = async (query?: QueryType): Promise<QueryResult> => {
       
       Here's is an example of a good answer with the subject Paris:
       
-      [START QUESTION] What is the capital city of France?
-      [END QUESTION]
+      [START QUESTION] What is the capital city of France? [END QUESTION]
       
-      [START CHOICE1] Berlin
-      [END CHOICE1]
-      [START CHOICE2] Paris
-      [END CHOICE2]
-      [START CHOICE3] Rome
-      [END CHOICE3]
-      [START CHOICE4] London
-      [END CHOICE4]
+      [START CHOICE1] Berlin [END CHOICE1]
+      [START CHOICE2] Paris [END CHOICE2]
+      [START CHOICE3] Rome [END CHOICE3]
+      [START CHOICE4] London [END CHOICE4]
       
       [GOOD CHOICE: 2]`,
       max_tokens: 4000,
