@@ -36,7 +36,7 @@ const fetchData = async (query?: QueryType): Promise<QueryResult> => {
     },
     data: {
       model: "text-davinci-003",
-      prompt: `Act as a teacher. You will write a MCQ about ${query?.subject}.
+      prompt: `Act as a teacher. You will write a MCQ about ${query?.subject}, in ${query?.language}.
       You will follow this format: 
       
       [START QUESTION] Here is the question [END QUESTION]

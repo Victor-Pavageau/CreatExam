@@ -181,13 +181,16 @@ function TestUI() {
         <Col span={6}>
 
           {/*
-              - Changer le prompt pour ajouter la langue
+              - Remplacer l'ancienne interface par la nouvelle
               - Modifier les appels d'API pour avoir 5 questions en demander les questions une par une en évitant les doublons
               - Modifier les appels d'API pour parse les réponses et les mettre dans les bons objets (isGoodAnswer)
               - Ajouter les paramètres dans l'UI de création de question
               - Ajouter toutes les features des paramètres de questions et des choix
-              - Faire tous les liens front et back
+              - Faire page d'accueil et page de présentation des fondateurs
+              - Prévoir messages d'erreur de requête API
+              - Comaprer plan d'archis et mock-ups initiaux
               - Tests
+              - Release v1.0
               */}
         </Col>
       </Row >
