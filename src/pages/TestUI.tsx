@@ -1,7 +1,8 @@
-import { Button, Col, Input, Row, Tooltip } from "antd";
+import { Button, Col, Input, Row, Select, Tooltip } from "antd";
 import "./TestUI.css";
-import { GoPlus, GoSettings } from "react-icons/go";
+import { GoPlus } from "react-icons/go";
 import { HiDotsVertical } from "react-icons/hi";
+import { HiLanguage } from "react-icons/hi2"
 import { FiEdit3 } from "react-icons/fi";
 import { MdDeleteForever, MdLoop } from "react-icons/md";
 import { useState } from "react";
@@ -66,6 +67,7 @@ const propositionsLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 function TestUI() {
   const [selectedQuestionID, setSelectedQuestionID] = useState(0);
+  const [selectedLanguage, setSelectedLanguage] = useState("english")
 
   const threeDotsLogo = <HiDotsVertical size={20} />;
 
@@ -75,6 +77,11 @@ function TestUI() {
     }
     return string;
   };
+
+
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language)
+  }
 
   const isSelectedQuestion = (questionID: number) => {
     return questionID === selectedQuestionID;
@@ -88,7 +95,7 @@ function TestUI() {
             Create the MCQ you want.
           </h1>
           <div className="flex gap-3">
-            <Input placeholder="Enter the subject of your MCQ"></Input>
+            <Input placeholder="Enter the subject of your MCQ" />
             <Button size="large" type="primary">
               <div className="font-semibold bg-transparent">Generate</div>
             </Button>
@@ -126,7 +133,7 @@ function TestUI() {
                     type="text"
                     className="flex justify-center items-center pr-0"
                   >
-                    <GoSettings
+                    <GoPlus
                       size={20}
                       onClick={() => {
                         alert("edit the question");
@@ -178,7 +185,45 @@ function TestUI() {
             </div>
           </div>
         </Col>
-        <Col span={6}>
+        <Col span={4} className="ml-auto">
+          <div className="flex justify-center">
+            <div className="bg-white/10 p-3 rounded w-full mx-5">
+              <div className="flex justify-center flex-col gap-y-5 bg-transparent">
+                <div>
+                  <h3 className="mt-0 mb-2">
+                    MCQ Settings
+                  </h3>
+                </div>
+                <div className="flex gap-3 items-center">
+                  <HiLanguage size={20} />
+                  <Select
+                    size="large"
+                    className="w-full"
+                    defaultValue={selectedLanguage}
+                    onChange={handleLanguageChange}
+                    options={[
+                      {
+                        value: 'english', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/w20/us.png" alt=" country flag" />
+                          <div>
+                            English
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'french', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/w20/fr.png" alt=" country flag" />
+                          <div>
+                            French
+                          </div>
+                        </div>
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/*
               - Remplacer l'ancienne interface par la nouvelle
@@ -188,7 +233,7 @@ function TestUI() {
               - Ajouter toutes les features des paramètres de questions et des choix
               - Faire page d'accueil et page de présentation des fondateurs
               - Prévoir messages d'erreur de requête API
-              - Comaprer plan d'archis et mock-ups initiaux
+              - Comparer plan d'archis et mock-ups initiaux
               - Tests
               - Release v1.0
               */}

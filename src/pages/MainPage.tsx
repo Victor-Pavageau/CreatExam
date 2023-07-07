@@ -1,6 +1,5 @@
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import YouTube from "react-youtube";
 
 function MainPage() {
   const navigate = useNavigate();
@@ -24,8 +23,8 @@ function MainPage() {
             <div className="bg-transparent">Try CreatExam for free</div>
           </Button>
         </div>
-        <div className="mt-10">
-          <YouTube videoId="_eHjifELI-k"></YouTube></div>
+        <iframe className="mt-10 w-full border-0 h-full"
+          src="https://www.youtube.com/embed/caPaSaXGgG8" />
       </div>
     </div>
   );

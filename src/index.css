@@ -1,7 +1,7 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+body, html {
   background-color: black;
   font-family: "Manrope", sans-serif;
   font-weight: 500;

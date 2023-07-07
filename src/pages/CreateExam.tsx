@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import { useGenerateQuestion } from "../api/useGenerateQuestion";
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
@@ -16,9 +16,10 @@ type QuestionType = {
 
 function CreateExam() {
   const [querySubject, setQuerySubject] = useState("")
+  const [selectedLanguage, setSelectedLanguage] = useState("english")
   const [tempInputValue, setTempInputValue] = useState("")
   const [questionArray, setQuestionArray] = useState<QuestionType[]>([])
-  const { data } = useGenerateQuestion({ subject: querySubject });
+  const { data } = useGenerateQuestion({ subject: querySubject, language: selectedLanguage });
 
   const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
@@ -31,6 +32,9 @@ function CreateExam() {
     console.log(questionArray);
   }, [questionArray])
 
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language)
+  }
 
   const formatQuery = (queryResponse?: string) => {
     if (queryResponse) {
@@ -41,14 +45,14 @@ function CreateExam() {
         for (let i = 0; i < numberOfPropositions; i++) {
 
           if (i < numberOfPropositions - 2) {
-            let proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[i]}) `), queryResponse.indexOf(`${alphabet[i + 1]}) `) - 1);
+            const proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[i]}) `), queryResponse.indexOf(`${alphabet[i + 1]}) `) - 1);
             propositionArray.push({
               proposition: proposition,
               isCorrect: proposition.substring(proposition.indexOf("["), proposition.indexOf("]") + 1) === "[Correcte]",
             })
           }
           else if (i !== numberOfPropositions - 1) {
-            let proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[numberOfPropositions - 2]}) `));
+            const proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[numberOfPropositions - 2]}) `));
             propositionArray.push({
               proposition: proposition,
               isCorrect: proposition.substring(proposition.indexOf("["), proposition.indexOf("]") + 1) === "[Correcte]",
@@ -69,7 +73,29 @@ function CreateExam() {
           Create the MCQ you want.
         </h1>
         <div className="flex gap-3">
-          <Input placeholder="Enter the main subject of your MCQ" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }}></Input>
+          <Input placeholder="Enter the main subject of your MCQ" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }} />
+          <Select
+            defaultValue={selectedLanguage}
+            onChange={handleLanguageChange}
+            options={[
+              {
+                value: 'english', label: <div className="flex gap-1">
+                  <img src="https://flagcdn.com/w20/us.png" alt=" country flag" />
+                  <div>
+                    English
+                  </div>
+                </div>
+              },
+              {
+                value: 'french', label: <div className="flex gap-1">
+                  <img src="https://flagcdn.com/w20/fr.png" alt=" country flag" />
+                  <div>
+                    French
+                  </div>
+                </div>
+              },
+            ]}
+          />
           <Button size="large" type="primary" onClick={() => { setQuerySubject(tempInputValue) }}>
             <div className="font-semibold bg-transparent">Generate</div>
           </Button>

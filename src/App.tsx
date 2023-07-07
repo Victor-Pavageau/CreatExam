@@ -1,5 +1,4 @@
 import { ConfigProvider } from "antd";
-import "./App.css";
 import RouteHandler from "./routings";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 

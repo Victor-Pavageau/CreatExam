@@ -27,12 +27,12 @@ type QueryResult = {
 };
 
 const fetchData = async (query?: QueryType): Promise<QueryResult> => {
-  var options = {
+  const options = {
     method: "POST",
     url: "https://api.openai.com/v1/completions",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+      Authorization: `Bearer ${process.env.VITE_OPENAI_API_KEY}`,
     },
     data: {
       model: "text-davinci-003",
