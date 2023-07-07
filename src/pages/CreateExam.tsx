@@ -1,31 +1,23 @@
 import { Button, Input, Select } from "antd";
-import { useGenerateQuestion } from "../api/useGenerateQuestion";
+import { useGenerateQuestion } from "../hooks/useGenerateQuestion"
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import "./CreateExam.css"
-
-type PropositionType = {
-  proposition: string;
-  isCorrect: boolean;
-}
-
-type QuestionType = {
-  question?: string;
-  propositions?: PropositionType[];
-}
+import { Question } from "../api/openai";
 
 function CreateExam() {
-  const [querySubject, setQuerySubject] = useState("")
+  const [querySubject, setQuerySubject] = useState<string | undefined>()
   const [selectedLanguage, setSelectedLanguage] = useState("english")
   const [tempInputValue, setTempInputValue] = useState("")
-  const [questionArray, setQuestionArray] = useState<QuestionType[]>([])
-  const { data } = useGenerateQuestion({ subject: querySubject, language: selectedLanguage });
+  const [questionArray, setQuestionArray] = useState<Question[]>([])
+  const { data } = useGenerateQuestion({ subject: querySubject!, language: selectedLanguage });
 
   const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
   useEffect(() => {
-    formatQuery(data?.choices[0].text)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (data) {
+      setQuestionArray(data)
+    }
   }, [data])
 
   useEffect(() => {
@@ -34,36 +26,6 @@ function CreateExam() {
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language)
-  }
-
-  const formatQuery = (queryResponse?: string) => {
-    if (queryResponse) {
-      const queryResponseWithoutQuestion = queryResponse.substring(queryResponse.indexOf("?") + 1);
-      const numberOfPropositions = queryResponseWithoutQuestion.split(") ").length;
-      if (numberOfPropositions > 0 && numberOfPropositions <= 10) {
-        const propositionArray: PropositionType[] = [];
-        for (let i = 0; i < numberOfPropositions; i++) {
-
-          if (i < numberOfPropositions - 2) {
-            const proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[i]}) `), queryResponse.indexOf(`${alphabet[i + 1]}) `) - 1);
-            propositionArray.push({
-              proposition: proposition,
-              isCorrect: proposition.substring(proposition.indexOf("["), proposition.indexOf("]") + 1) === "[Correcte]",
-            })
-          }
-          else if (i !== numberOfPropositions - 1) {
-            const proposition = queryResponse.substring(queryResponse.indexOf(`${alphabet[numberOfPropositions - 2]}) `));
-            propositionArray.push({
-              proposition: proposition,
-              isCorrect: proposition.substring(proposition.indexOf("["), proposition.indexOf("]") + 1) === "[Correcte]",
-            })
-          }
-        }
-        setQuestionArray([...questionArray, {
-          question: queryResponse.substring(0, queryResponse.indexOf("?") + 1), propositions: propositionArray,
-        }])
-      }
-    }
   }
 
   return (
@@ -100,7 +62,7 @@ function CreateExam() {
             <div className="font-semibold bg-transparent">Generate</div>
           </Button>
         </div>
-        <div className="max-w-lg font-semibold text-center mx-auto mt-10">
+        {/* <div className="max-w-lg font-semibold text-center mx-auto mt-10">
           {questionArray.map((question: QuestionType) => (
             <div key={nanoid()}>
               <h3>
@@ -118,7 +80,7 @@ function CreateExam() {
               ))}
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

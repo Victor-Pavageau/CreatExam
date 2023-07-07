@@ -20,48 +20,49 @@ type Question = {
 
 const test: Question[] = [
   {
-    question: "Quelle est la population de Paris en 2020 ?",
-    propositions: [
+    "question": "\n      What language is TypeScript created in?\n      ",
+    "propositions": [
       {
-        isGoodAnswer: false,
-        proposition: "500 000 habitants.",
+        "proposition": "\n      Java\n      ",
+        "isGoodAnswer": false
       },
       {
-        isGoodAnswer: false,
-        proposition: "12 000 000 habitants.",
+        "proposition": "\n      C#\n      ",
+        "isGoodAnswer": false
       },
       {
-        isGoodAnswer: true,
-        proposition: "2 500 000 habitants.",
+        "proposition": "\n      JavaScript\n      ",
+        "isGoodAnswer": false
       },
       {
-        isGoodAnswer: false,
-        proposition: "7 000 000 habitants.",
-      },
-    ],
+        "proposition": "\n      Python\n      \n      ",
+        "isGoodAnswer": true
+      }
+    ]
   },
   {
-    question: "Quelle est la capitale du Royaume-Uni ?",
-    propositions: [
+    "question": "\n      What is the main purpose of an ESLint configuration?\n      ",
+    "propositions": [
       {
-        isGoodAnswer: true,
-        proposition: "Londres.",
+        "proposition": "\n      To check the readability of code\n      ",
+        "isGoodAnswer": false
       },
       {
-        isGoodAnswer: false,
-        proposition: "Edinburgh.",
+        "proposition": "\n      To define coding styles and conventions\n      ",
+        "isGoodAnswer": false
       },
       {
-        isGoodAnswer: false,
-        proposition: "Manchester.",
+        "proposition": "\n      To validate the syntax of code\n      ",
+        "isGoodAnswer": true
       },
       {
-        isGoodAnswer: false,
-        proposition: "Cardiff.",
-      },
-    ],
-  },
-];
+        "proposition": "\n      To modify existing code",
+        "isGoodAnswer": false
+      }
+    ]
+  }
+]
+
 
 const propositionsLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
@@ -175,9 +176,9 @@ function TestUI() {
                 ))
               }
               <div className="flex justify-center items-center !bg-transparent">
-                <Button type="dashed" className="w-full h-10 !bg-transparent border-white/20 border-2 mt-5 hover:!border-white/40 focus:!border-white/40 flex flex-row gap-2 justify-center items-center">
-                  <GoPlus size={16} />
-                  <div className="text-white">
+                <Button type="dashed" className="w-full h-10 !bg-transparent border-white/20 border-2 mt-5 hover:!border-white/40 focus:!border-white/40 flex flex-row gap-2 justify-center items-center text-white">
+                  <GoPlus size={20} />
+                  <div>
                     Add option
                   </div>
                 </Button>
@@ -195,7 +196,7 @@ function TestUI() {
                   </h3>
                 </div>
                 <div className="flex gap-3 items-center">
-                  <HiLanguage size={20} />
+                  <HiLanguage size={25} />
                   <Select
                     size="large"
                     className="w-full"
@@ -204,16 +205,16 @@ function TestUI() {
                     options={[
                       {
                         value: 'english', label: <div className="flex gap-3 items-center">
-                          <img src="https://flagcdn.com/w20/us.png" alt=" country flag" />
-                          <div>
+                          <img src="https://flagcdn.com/us.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
                             English
                           </div>
                         </div>
                       },
                       {
                         value: 'french', label: <div className="flex gap-3 items-center">
-                          <img src="https://flagcdn.com/w20/fr.png" alt=" country flag" />
-                          <div>
+                          <img src="https://flagcdn.com/fr.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
                             French
                           </div>
                         </div>
