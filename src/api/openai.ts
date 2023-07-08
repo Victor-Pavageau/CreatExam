@@ -78,24 +78,9 @@ export const generateQuestion = async (
       },
       data: {
         model: "text-davinci-003",
-        prompt: `Act as a teacher. You will write 5 MCQ test questions about ${query?.subject}, in ${query?.language}.
-      You will follow this format for each question: 
-      
-      [QUESTION]
-      Here is the question
-      [GOOD ANSWER]
-      ID OF THE GOOD CHOICE (here 2)
+        prompt: `You will write 5 different questions about ${query?.subject}, in ${query?.language}.
 
-      [START CHOICE]
-      Here is the first choice, which is wrong
-      [START CHOICE]
-      Here is the second choice, which is true
-      [START CHOICE]
-      Here is the third choice, which is wrong
-      [START CHOICE]
-      Here is the fourth choice, which is wrong
-      
-      Here's is an example of 3 MCQ with the subject Paris and the language english:
+        Here's is an example of the format you should follow 2 question based on the subject Paris and the language english:
       
       [QUESTION]
       Which famous landmark in Paris is known as the "Iron Lady"?
@@ -125,20 +110,8 @@ export const generateQuestion = async (
       Seine River
       [START CHOICE]
       Rhine River
-
-      [START QUESTION]
-      Which palace in Paris is home to the French president?
-      [GOOD ANSWER]
-      4
-
-      [START CHOICE]
-      Palace of Versailles
-      [START CHOICE]
-      Palace of the Legion of Honor
-      [START CHOICE]
-      Palais Garnier
-      [START CHOICE]
-      Élysée Palace`,
+      
+      Now write 5 questions about ${query?.subject}, in ${query?.language} following the same format`,
         max_tokens: 3500,
         temperature: 1,
       },
