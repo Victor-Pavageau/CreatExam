@@ -1,6 +1,7 @@
 import { Button, Col, Input, Row, Select, Tooltip } from "antd";
 import "./TestUI.css";
 import { GoPlus } from "react-icons/go";
+import { IoSettingsOutline } from "react-icons/io5";
 import { HiDotsVertical } from "react-icons/hi";
 import { HiLanguage } from "react-icons/hi2"
 import { FiEdit3 } from "react-icons/fi";
@@ -98,7 +99,7 @@ function TestUI() {
           <div className="flex gap-3">
             <Input placeholder="Enter the subject of your MCQ" />
             <Button size="large" type="primary">
-              <div className="font-semibold bg-transparent">Generate</div>
+              <div className="font-semibold">Generate</div>
             </Button>
           </div>
         </div>
@@ -107,7 +108,7 @@ function TestUI() {
         <Col span={6}>
           <div className="flex justify-center">
             <div className="bg-white/10 p-3 rounded w-full mx-5">
-              <div className="flex justify-center flex-col gap-y-5 bg-transparent">
+              <div className="flex justify-center flex-col gap-y-5">
                 {test.map((questionTest, id) => (
                   <div
                     key={nanoid()}
@@ -132,14 +133,12 @@ function TestUI() {
                 <div className="flex justify-center items-center">
                   <Button
                     type="text"
-                    className="flex justify-center items-center pr-0"
+                    className="flex justify-center items-center pr-0 !text-white"
+                    onClick={() => {
+                      alert("edit the question");
+                    }}
                   >
-                    <GoPlus
-                      size={20}
-                      onClick={() => {
-                        alert("edit the question");
-                      }}
-                    />
+                    {threeDotsLogo}
                   </Button>
                 </div>
               </div>
@@ -157,17 +156,17 @@ function TestUI() {
                     </div>
                     <div className="flex justify-center items-center ml-auto mr-1">
                       <Tooltip placement="bottomLeft" title={<div className="flex flex-col items-center gap-y-1">
-                        <Button type="text" className="hover:!bg-white/20 w-full flex items-center gap-2">
-                          <MdLoop size={20} className="bg-transparent" /><div className="!bg-transparent">Regenerate</div>
+                        <Button type="text" className="hover:!bg-white/20 w-full flex items-center gap-2 !text-white">
+                          <MdLoop size={20} /><div>Regenerate</div>
                         </Button>
-                        <Button type="text" className="hover:!bg-white/20 w-full flex items-center gap-2">
-                          <FiEdit3 size={17} className="bg-transparent" /><div className="!bg-transparent">Reformulate</div>
+                        <Button type="text" className="hover:!bg-white/20 w-full flex items-center gap-2 !text-white">
+                          <FiEdit3 size={17} /><div>Reformulate</div>
                         </Button>
-                        <Button type="text" className="hover:!bg-[#ff4d4f] w-full flex items-center gap-2">
-                          <MdDeleteForever size={20} className="bg-transparent" /><div className="!bg-transparent">Delete</div>
+                        <Button type="text" className="hover:!bg-[#ff4d4f] w-full flex items-center gap-2 !text-white">
+                          <MdDeleteForever size={20} /><div>Delete</div>
                         </Button>
                       </div>} showArrow={false} arrow={false} trigger={"hover"}>
-                        <Button type="text">
+                        <Button type="text" className="!text-white">
                           {threeDotsLogo}
                         </Button>
                       </Tooltip>
@@ -175,8 +174,8 @@ function TestUI() {
                   </div>
                 ))
               }
-              <div className="flex justify-center items-center !bg-transparent">
-                <Button type="dashed" className="w-full h-10 !bg-transparent border-white/20 border-2 mt-5 hover:!border-white/40 focus:!border-white/40 flex flex-row gap-2 justify-center items-center text-white">
+              <div className="flex justify-center items-center">
+                <Button type="dashed" className="w-full h-10 bg-transparent border-white/20 border-2 mt-5 hover:!border-white/40 focus:!border-white/40 flex flex-row gap-2 justify-center items-center !text-white">
                   <GoPlus size={20} />
                   <div>
                     Add option
@@ -186,20 +185,21 @@ function TestUI() {
             </div>
           </div>
         </Col>
-        <Col span={4} className="ml-auto">
+        <Col span={5} className="ml-auto">
           <div className="flex justify-center">
             <div className="bg-white/10 p-3 rounded w-full mx-5">
-              <div className="flex justify-center flex-col gap-y-5 bg-transparent">
-                <div>
-                  <h3 className="mt-0 mb-2">
+              <div className="flex justify-center flex-col gap-y-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <IoSettingsOutline size={25} />
+                  <div className="text-2xl font-semibold">
                     MCQ Settings
-                  </h3>
+                  </div>
                 </div>
                 <div className="flex gap-3 items-center">
                   <HiLanguage size={25} />
                   <Select
                     size="large"
-                    className="w-full"
+                    className="w-[65%]"
                     defaultValue={selectedLanguage}
                     onChange={handleLanguageChange}
                     options={[
@@ -216,6 +216,62 @@ function TestUI() {
                           <img src="https://flagcdn.com/fr.svg" alt="country flag" className="rounded-sm w-8" />
                           <div className="font-semibold">
                             French
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'mandarin', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/cn.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            Mandarin
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'spanish', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/es.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            Spanish
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'portuguese', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/pt.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            Portuguese
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'russian', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/ru.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            Russian
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'german', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/de.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            German
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'italian', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/it.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            Italian
+                          </div>
+                        </div>
+                      },
+                      {
+                        value: 'japanese', label: <div className="flex gap-3 items-center">
+                          <img src="https://flagcdn.com/jp.svg" alt="country flag" className="rounded-sm w-8" />
+                          <div className="font-semibold">
+                            Japanese
                           </div>
                         </div>
                       },
