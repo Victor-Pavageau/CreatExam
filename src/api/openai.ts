@@ -112,7 +112,7 @@ export const generateQuestion = async (
       Rhine River
       
       Now write 5 questions about ${query?.subject}, in ${query?.language} following the same format`,
-        max_tokens: 3500,
+        max_tokens: 3700,
         temperature: 1,
       },
     })
