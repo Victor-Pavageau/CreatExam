@@ -13,7 +13,7 @@ function GenerationSettings(props: Props) {
   return (
     <div className={`bg-white/10 p-3 rounded ${className}`}>
       <div className="flex justify-center flex-col gap-y-5">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-3 mb-3">
           <IoSettingsOutline size={25} />
           <div className="text-2xl font-semibold">
             MCQ Settings
@@ -103,15 +103,6 @@ function GenerationSettings(props: Props) {
           />
         </div>
         <div>
-          - Remplacer l'ancienne interface par la nouvelle
-        </div>
-        <div>
-          - Modifier les appels d'API pour avoir 5 questions en demander les questions une par une en évitant les doublons
-        </div>
-        <div>
-          - Modifier les appels d'API pour parse les réponses et les mettre dans les bons objets (isGoodAnswer)
-        </div>
-        <div>
           - Ajouter les paramètres dans l'UI de création de question
         </div>
         <div>
@@ -122,15 +113,6 @@ function GenerationSettings(props: Props) {
         </div>
         <div>
           - Prévoir messages d'erreur de requête API
-        </div>
-        <div>
-          - Comparer plan d'archis et mock-ups initiaux
-        </div>
-        <div>
-          - Tests
-        </div>
-        <div>
-          - Release v1.0
         </div>
       </div>
     </div>

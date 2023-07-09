@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import { tp } from "../routings";
 
 function MainPage() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function MainPage() {
             className="border-none flex justify-center items-center"
             type="primary"
             size="large"
-            onClick={() => { navigate("create-exam") }}
+            onClick={() => { navigate(tp("/generate")) }}
           >
             <div className="bg-transparent">Try CreatExam for free</div>
           </Button>
