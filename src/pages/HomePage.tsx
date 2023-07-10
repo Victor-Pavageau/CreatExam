@@ -2,7 +2,7 @@ import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { tp } from "../routings";
 
-function MainPage() {
+function HomePage() {
   const navigate = useNavigate();
 
   return (
@@ -31,4 +31,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default HomePage;

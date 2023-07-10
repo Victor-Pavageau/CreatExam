@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import MainPage from "./pages/MainPage";
+import HomePage from "./pages/HomePage";
 import CreateExam from "./pages/CreateExam";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -34,7 +34,7 @@ const replacePlaceholders = (url: Path, replaceArray: string[]): string => {
 function RouteHandler(): JSX.Element {
   return (
     <Routes>
-      <Route path={tp("/")} element={<MainPage />} />
+      <Route path={tp("/")} element={<HomePage />} />
       <Route path={tp("/generate")} element={<CreateExam />} />
       <Route path={tp("*")} element={<NotFoundPage />} />
     </Routes>
