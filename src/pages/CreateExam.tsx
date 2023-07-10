@@ -39,13 +39,6 @@ function CreateExam() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading])
 
-  const truncateLongQuestion = (string: string) => {
-    if (string.length > 70) {
-      return string.slice(0, 50) + "...";
-    }
-    return string;
-  };
-
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language)
   }
@@ -101,7 +94,7 @@ function CreateExam() {
                               }}
                             >
                               <div>{id + 1}.</div>
-                              {truncateLongQuestion(questionTest.question)}
+                              {questionTest.question}
                             </div>
                           ))}
                         </div>
