@@ -102,18 +102,6 @@ function GenerationSettings(props: Props) {
             ]}
           />
         </div>
-        <div>
-          - Ajouter les paramètres dans l'UI de création de question
-        </div>
-        <div>
-          - Ajouter toutes les features des paramètres de questions et des choix
-        </div>
-        <div>
-          - Faire page d'accueil et page de présentation des fondateurs
-        </div>
-        <div>
-          - Prévoir messages d'erreur de requête API
-        </div>
       </div>
     </div>
   )
