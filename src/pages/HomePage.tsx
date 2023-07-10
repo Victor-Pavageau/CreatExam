@@ -24,8 +24,17 @@ function HomePage() {
             <div className="bg-transparent">Try CreatExam for free</div>
           </Button>
         </div>
-        <iframe className="mt-10 w-full border-0 h-full"
-          src="https://www.youtube.com/embed/caPaSaXGgG8" />
+        <div className="flex justify-center">
+          <iframe
+            className="mt-10 border-0"
+            width="850"
+            height="480"
+            src="https://www.youtube.com/embed/caPaSaXGgG8"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title="CreatExam presentation"
+          />
+        </div>
       </div>
     </div>
   );
