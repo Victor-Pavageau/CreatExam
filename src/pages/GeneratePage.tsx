@@ -11,7 +11,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import GenerationSettings from "../components/GenerationSettings";
 
-function CreateExam() {
+function GeneratePage() {
   const [selectedQuestionID, setSelectedQuestionID] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState("english")
   const [isGenerationLoading, setIsGenerationLoading] = useState(false)
@@ -174,4 +174,4 @@ function CreateExam() {
   );
 }
 
-export default CreateExam;
+export default GeneratePage;
