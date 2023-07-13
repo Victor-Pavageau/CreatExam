@@ -22,8 +22,10 @@ export type Question = {
 type ChoiceResponse = {
   finish_reason: string;
   index: number;
-  logprobs?: string;
-  text: string;
+  message: {
+    role: string;
+    content: string;
+  };
 };
 
 export type QueryResult = {
@@ -71,52 +73,58 @@ export const generateQuestion = async (
   const data: string = await axios
     .request<QueryResult>({
       method: "POST",
-      url: "https://api.openai.com/v1/completions",
+      url: "https://api.openai.com/v1/chat/completions",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${OPENAI_KEY}`,
       },
       data: {
-        model: "text-davinci-003",
-        prompt: `You will write 5 different questions about ${query?.subject}, in ${query?.language}.
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You are a professional and well skill teacher who have a lots of knowledge about ${query?.subject}`,
+          },
+          {
+            role: "user",
+            content: `You will write 5 different questions about ${query?.subject}, in ${query?.language}.
+            
+            Here's is an example of the format you should follow 2 question based on the subject Paris and the language english:
+            
+            [QUESTION]
+            Which famous landmark in Paris is known as the 'Iron Lady'?
+            [GOOD ANSWER]
+            1
 
-        Here's is an example of the format you should follow 2 question based on the subject Paris and the language english:
-      
-      [QUESTION]
-      Which famous landmark in Paris is known as the "Iron Lady"?
-      [GOOD ANSWER]
-      1
-
-      [START CHOICE]
-      The Eiffel Tower
-      [START CHOICE]
-      The Louvre Museum
-      [START CHOICE]
-      Notre-Dame Cathedral
-      [START CHOICE]
-      Arc de Triomphe
-
-
-      [QUESTION]
-      Which river flows through the city of Paris?
-      [GOOD ANSWER]
-      3
-
-      [START CHOICE]
-      Thames River
-      [START CHOICE]
-      Danube River
-      [START CHOICE]
-      Seine River
-      [START CHOICE]
-      Rhine River
-      
-      Now write 5 questions about ${query?.subject}, in ${query?.language} following the same format`,
-        max_tokens: 3700,
-        temperature: 1,
+            [START CHOICE]
+            The Eiffel Tower
+            [START CHOICE]
+            The Louvre Museum
+            [START CHOICE]
+            Notre-Dame Cathedral
+            [START CHOICE]
+            Arc de Triomphe
+            
+            [QUESTION]
+            Which river flows through the city of Paris?
+            [GOOD ANSWER]
+            3
+            
+            [START CHOICE]
+            Thames River
+            [START CHOICE]
+            Danube River
+            [START CHOICE]
+            Seine River
+            [START CHOICE]
+            Rhine River
+            
+            Now write 5 questions about ${query?.subject}, in ${query?.language} following the same format.`,
+          },
+        ],
       },
     })
-    .then((result) => result.data.choices[0].text);
+    .then((result) => result.data.choices[0].message.content);
 
   return rawResponseToQueryResult(data);
 };
