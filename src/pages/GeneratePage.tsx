@@ -75,7 +75,7 @@ function GeneratePage() {
             <Button size="large" type="primary" onClick={() => {
               generateMCQ()
             }}>
-              <div className="font-semibold">Generate</div>
+              <div className="font-semibold">{questionArray.length < 1 ? "Generate" : "Regenerate"}</div>
             </Button>
           </div>
         </div>
