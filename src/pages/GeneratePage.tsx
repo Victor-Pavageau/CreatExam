@@ -16,9 +16,12 @@ function GeneratePage() {
   const [selectedLanguage, setSelectedLanguage] = useState("english")
   const [isGenerationLoading, setIsGenerationLoading] = useState(false)
   const [querySubject, setQuerySubject] = useState<string | undefined>()
+  const [numberOfQuestions, setNumberOfQuestions] = useState(5)
+  const [difficulty, setDifficulty] = useState(3)
+  const [numberOfChoices, setNumberOfChoices] = useState<[number, number]>([2, 4])
   const [tempInputValue, setTempInputValue] = useState("")
   const [questionArray, setQuestionArray] = useState<Question[]>([])
-  const { data, isLoading } = useGenerateQuestion({ subject: querySubject!, language: selectedLanguage });
+  const { data, isLoading } = useGenerateQuestion({ subject: querySubject!, language: selectedLanguage, difficulty, numberOfChoices, numberOfQuestions });
 
   const threeDotsLogo = <HiDotsVertical size={20} />;
   const propositionsLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -47,6 +50,19 @@ function GeneratePage() {
     return questionID === selectedQuestionID;
   }
 
+  const generateMCQ = () => {
+    if (tempInputValue !== querySubject) {
+      setIsGenerationLoading(true)
+    }
+    setQuerySubject(tempInputValue)
+  }
+
+  document.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      generateMCQ()
+    }
+  })
+
   return (
     <>
       <div className="flex justify-center">
@@ -57,10 +73,7 @@ function GeneratePage() {
           <div className="flex gap-3">
             <Input placeholder="Enter the subject of your MCQ" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }} />
             <Button size="large" type="primary" onClick={() => {
-              if (tempInputValue !== querySubject) {
-                setIsGenerationLoading(true)
-              }
-              setQuerySubject(tempInputValue)
+              generateMCQ()
             }}>
               <div className="font-semibold">Generate</div>
             </Button>
@@ -77,7 +90,7 @@ function GeneratePage() {
             {
               questionArray.length < 1 ?
                 <div className="flex justify-center mt-10">
-                  <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-[20%]" />
+                  <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-[20%]" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} />
                 </div>
                 :
                 <Row className="mt-14">
@@ -163,7 +176,7 @@ function GeneratePage() {
                   </Col>
                   <Col span={5} className="ml-auto">
                     <div className="flex justify-center mx-5">
-                      <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-full" />
+                      <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-full" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} />
                     </div>
                   </Col>
                 </Row >

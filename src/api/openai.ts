@@ -7,6 +7,9 @@ export const OPENAI_KEY = JSON.stringify(
 export type QueryType = {
   subject: string;
   language: string;
+  numberOfQuestions: number;
+  difficulty: number;
+  numberOfChoices: number[];
 };
 
 export type Proposition = {
@@ -41,6 +44,22 @@ export type QueryResult = {
   };
 };
 
+const difficultyToText = (difficulty: number) => {
+  if (difficulty <= 1) {
+    return "beginner";
+  }
+  if (difficulty === 2) {
+    return "easy";
+  }
+  if (difficulty === 4) {
+    return "hard";
+  }
+  if (difficulty === 5) {
+    return "expert";
+  }
+  return "average";
+};
+
 const rawResponseToQueryResult = (rawResponse: string) => {
   const queryResult: Question[] = [];
   const questionSplitted = rawResponse.split("[QUESTION]");
@@ -50,8 +69,8 @@ const rawResponseToQueryResult = (rawResponse: string) => {
     const question = questionSplitted[i].split("[GOOD ANSWER]")[0];
     const idGoodAnswer = questionSplitted[i]
       .split("[GOOD ANSWER]")[1]
-      .split("[START CHOICE]")[0];
-    const propositionsSplitted = questionSplitted[i].split("[START CHOICE]");
+      .split("[CHOICE]")[0];
+    const propositionsSplitted = questionSplitted[i].split("[CHOICE]");
     propositionsSplitted.shift();
     for (let j = 0; j < propositionsSplitted.length; j++) {
       propositionsList.push({
@@ -79,47 +98,60 @@ export const generateQuestion = async (
         Authorization: `Bearer ${OPENAI_KEY}`,
       },
       data: {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
-            content: `You are a professional and well skill teacher who have a lots of knowledge about ${query?.subject}`,
+            content: `Act as a professional and well skill teacher who have a lots of knowledge about ${query.subject}`,
           },
           {
             role: "user",
-            content: `You will write 5 different questions about ${query?.subject}, in ${query?.language}.
-            
-            Here's is an example of the format you should follow 2 question based on the subject Paris and the language english:
+            content: `Write ${query.numberOfQuestions} questions about ${
+              query.subject
+            } in ${
+              query.language
+            }. The questions should be of ${difficultyToText(
+              query.difficulty
+            )} difficulty (${
+              query.difficulty
+            } out of 5, where 1 is easy and 5 is expert level).
+            Follow the provided format, which includes a question, the correct answer's position, and between ${
+              query.numberOfChoices[0]
+            } to ${query.numberOfChoices[1]} choices.
+            Here's an example of the format using two English questions about Paris:
             
             [QUESTION]
             Which famous landmark in Paris is known as the 'Iron Lady'?
             [GOOD ANSWER]
             1
-
-            [START CHOICE]
+            [CHOICE]
             The Eiffel Tower
-            [START CHOICE]
+            [CHOICE]
             The Louvre Museum
-            [START CHOICE]
+            [CHOICE]
             Notre-Dame Cathedral
-            [START CHOICE]
+            [CHOICE]
             Arc de Triomphe
             
             [QUESTION]
             Which river flows through the city of Paris?
             [GOOD ANSWER]
             3
-            
-            [START CHOICE]
+            [CHOICE]
             Thames River
-            [START CHOICE]
+            [CHOICE]
             Danube River
-            [START CHOICE]
+            [CHOICE]
             Seine River
-            [START CHOICE]
-            Rhine River
             
-            Now write 5 questions about ${query?.subject}, in ${query?.language} following the same format.`,
+            Now, using this format, create ${
+              query.numberOfQuestions
+            } questions about ${query.subject} in ${
+              query.language
+            }. Each question should have between ${
+              query.numberOfChoices[0]
+            } and ${query.numberOfChoices[1]} choices.
+            The answer must always be the right one, so be sure to double check that you provide the true choice as good answer`,
           },
         ],
       },
