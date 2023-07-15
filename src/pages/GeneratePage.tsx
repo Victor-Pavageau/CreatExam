@@ -93,7 +93,7 @@ function GeneratePage() {
                   <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-[20%]" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} />
                 </div>
                 :
-                <Row className="mt-14">
+                <Row className="mt-14 mb-5">
                   <Col span={6}>
                     <div className="flex justify-center">
                       <div className="bg-white/10 p-3 rounded w-full mx-5">
@@ -164,7 +164,7 @@ function GeneratePage() {
                           ))
                         }
                         <div className="flex justify-center items-center">
-                          <Button type="dashed" className="w-full h-10 bg-transparent border-white/20 border-2 mt-5 hover:!border-white/40 focus:!border-white/40 flex flex-row gap-2 justify-center items-center !text-white">
+                          <Button type="dashed" disabled={questionArray[selectedQuestionID].propositions.length >= 8} className="w-full h-10 bg-transparent border-white/20 border-2 mt-5 hover:!border-white/40 focus:!border-white/40 flex flex-row gap-2 justify-center items-center !text-white">
                             <GoPlus size={20} />
                             <div>
                               Add option
