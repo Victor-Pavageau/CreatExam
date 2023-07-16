@@ -46,7 +46,7 @@ export type QueryResult = {
 
 const difficultyToText = (difficulty: number) => {
   if (difficulty <= 1) {
-    return "beginner";
+    return "very easy";
   }
   if (difficulty === 2) {
     return "easy";
@@ -55,7 +55,7 @@ const difficultyToText = (difficulty: number) => {
     return "hard";
   }
   if (difficulty === 5) {
-    return "expert";
+    return "very hard";
   }
   return "average";
 };
@@ -114,7 +114,7 @@ export const generateQuestion = async (
               query.difficulty
             )} difficulty (${
               query.difficulty
-            } out of 5, where 1 is easy and 5 is expert level).
+            } out of 5, where 1 is very easy, 3 is average, and 5 is very hard level).
             Follow the provided format, which includes a question, the correct answer's position, and between ${
               query.numberOfChoices[0]
             } to ${query.numberOfChoices[1]} choices.

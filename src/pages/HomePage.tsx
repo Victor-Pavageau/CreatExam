@@ -73,6 +73,9 @@ function HomePage() {
         <Button
           className="flex justify-center items-center"
           ghost
+          onClick={() => {
+            navigate(tp("/who-are-we"))
+          }}
         >
           <div className="bg-transparent">Learn more about us</div>
         </Button>
@@ -88,7 +91,7 @@ function HomePage() {
           Ready to dive in?
         </h1>
         <div className="text-gray-400">
-          Create an account now and get 150 free tokens
+          Create an account now and get <b className="text-white">150 free tokens</b>
         </div>
         <div className="flex justify-center mt-10">
           <Button
