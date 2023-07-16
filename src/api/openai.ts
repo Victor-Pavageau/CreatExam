@@ -151,7 +151,7 @@ export const generateQuestion = async (
             }. Each question should have between ${
               query.numberOfChoices[0]
             } and ${query.numberOfChoices[1]} choices.
-            The answer must always be the right one, so be sure to double check that you provide the true choice as good answer`,
+            The answer must always be the right one, and both the choice and the question must be clear and well-written. So make sure you provide the right choice as the right answer.`,
           },
         ],
       },

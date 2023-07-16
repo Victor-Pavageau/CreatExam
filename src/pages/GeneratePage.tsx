@@ -10,6 +10,7 @@ import { useGenerateQuestion } from "../hooks/useGenerateQuestion";
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import GenerationSettings from "../components/GenerationSettings";
+import { useQueryClient } from "@tanstack/react-query";
 
 function GeneratePage() {
   const [selectedQuestionID, setSelectedQuestionID] = useState(0);
@@ -18,10 +19,11 @@ function GeneratePage() {
   const [querySubject, setQuerySubject] = useState<string | undefined>()
   const [numberOfQuestions, setNumberOfQuestions] = useState(5)
   const [difficulty, setDifficulty] = useState(3)
-  const [numberOfChoices, setNumberOfChoices] = useState<[number, number]>([2, 4])
+  const [numberOfChoices, setNumberOfChoices] = useState<[number, number]>([3, 5])
   const [tempInputValue, setTempInputValue] = useState("")
   const [questionArray, setQuestionArray] = useState<Question[]>([])
   const { data, isLoading } = useGenerateQuestion({ subject: querySubject!, language: selectedLanguage, difficulty, numberOfChoices, numberOfQuestions });
+  const queryClient = useQueryClient()
 
   const threeDotsLogo = <HiDotsVertical size={20} />;
   const propositionsLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -40,7 +42,7 @@ function GeneratePage() {
       setIsGenerationLoading(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading])
+  }, [isLoading, questionArray])
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language)
@@ -55,6 +57,15 @@ function GeneratePage() {
       setIsGenerationLoading(true)
     }
     setQuerySubject(tempInputValue)
+  }
+
+  const setMCQSettings = (language: string, difficulty: number, numberOfQuestions: number, numberOfChoices: [number, number]) => {
+    void queryClient.invalidateQueries({ queryKey: ['generate-question'] });
+    setSelectedLanguage(language);
+    setDifficulty(difficulty);
+    setNumberOfQuestions(numberOfQuestions);
+    setNumberOfChoices(numberOfChoices);
+    setIsGenerationLoading(true)
   }
 
   document.addEventListener("keypress", function (event) {
@@ -90,7 +101,7 @@ function GeneratePage() {
             {
               questionArray.length < 1 ?
                 <div className="flex justify-center mt-10">
-                  <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-[20%]" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} />
+                  <GenerationSettings setMCQSettings={setMCQSettings} handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-[20%]" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} isMCQAlreadyGenerated={questionArray.length > 1} />
                 </div>
                 :
                 <Row className="mt-14 mb-5">
@@ -176,7 +187,7 @@ function GeneratePage() {
                   </Col>
                   <Col span={5} className="ml-auto">
                     <div className="flex justify-center mx-5">
-                      <GenerationSettings handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-full" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} />
+                      <GenerationSettings setMCQSettings={setMCQSettings} handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} className="w-full" difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} isMCQAlreadyGenerated={questionArray.length > 1} />
                     </div>
                   </Col>
                 </Row >

@@ -1,9 +1,10 @@
-import { Radio, RadioChangeEvent, Select, Slider, Tag } from "antd"
+import { Button, Radio, RadioChangeEvent, Select, Slider, Tag } from "antd"
 import { SliderMarks } from "antd/es/slider";
 import { HiLanguage } from "react-icons/hi2"
 import { GiBrain, GiChoice } from "react-icons/gi"
 import { BsQuestionLg } from "react-icons/bs"
 import { VscSettings } from "react-icons/vsc"
+import { useState } from "react";
 
 type Props = {
   selectedLanguage: string;
@@ -15,10 +16,17 @@ type Props = {
   numberOfChoices: [number, number];
   handleNumberOfChoices: (numberOfChoices: [number, number]) => void;
   className: string
+  isMCQAlreadyGenerated: boolean
+  setMCQSettings: (language: string, difficulty: number, numberOfQuestions: number, numberOfChoices: [number, number]) => void;
 }
 
 function GenerationSettings(props: Props) {
-  const { handleLanguageChange, selectedLanguage, className, difficulty, handleDifficulty, handleNumberOfChoices, handleNumberOfQuestions, numberOfChoices, numberOfQuestions } = props
+  const { handleLanguageChange, selectedLanguage, className, difficulty, handleDifficulty, handleNumberOfChoices, handleNumberOfQuestions, setMCQSettings, numberOfChoices, numberOfQuestions, isMCQAlreadyGenerated } = props
+
+  const [tempLanguage, setTempLanguage] = useState(selectedLanguage)
+  const [tempDifficulty, setTempDifficulty] = useState(difficulty)
+  const [tempNumberOfQuestions, setTempNumberOfQuestions] = useState(numberOfQuestions)
+  const [tempNumberOfChoices, setTempNumberOfChoices] = useState(numberOfChoices)
 
   const propositionsMarks: SliderMarks = {
     2: {
@@ -65,6 +73,42 @@ function GenerationSettings(props: Props) {
     },
   };
 
+  const onLanguageChange = (language: string) => {
+    if (!isMCQAlreadyGenerated) {
+      handleLanguageChange(language)
+    }
+    else {
+      setTempLanguage(language)
+    }
+  }
+
+  const onDifficultyChange = (difficulty: number) => {
+    if (!isMCQAlreadyGenerated) {
+      handleDifficulty(difficulty)
+    }
+    else {
+      setTempDifficulty(difficulty)
+    }
+  }
+
+  const onNumberOfQuestionsChange = (numberOfQuestions: number) => {
+    if (!isMCQAlreadyGenerated) {
+      handleNumberOfQuestions(numberOfQuestions)
+    }
+    else {
+      setTempNumberOfQuestions(numberOfQuestions)
+    }
+  }
+
+  const onNumberOfChoicesChange = (numberOfChoices: [number, number]) => {
+    if (!isMCQAlreadyGenerated) {
+      handleNumberOfChoices(numberOfChoices)
+    }
+    else {
+      setTempNumberOfChoices(numberOfChoices)
+    }
+  }
+
   return (
     <div className={`bg-white/10 p-3 rounded ${className}`}>
       <div className="flex justify-center flex-col">
@@ -83,7 +127,7 @@ function GenerationSettings(props: Props) {
         <Select
           className="w-[65%]"
           defaultValue={selectedLanguage}
-          onChange={handleLanguageChange}
+          onChange={onLanguageChange}
           options={[
             {
               value: 'english', label: <div className="flex gap-3 items-center">
@@ -167,7 +211,7 @@ function GenerationSettings(props: Props) {
         </div>
         <Radio.Group onChange={
           (value: RadioChangeEvent) => {
-            handleNumberOfQuestions(Number(value.target.value));
+            onNumberOfQuestionsChange(Number(value.target.value));
           }
         } value={numberOfQuestions} className="w-full flex gap-5">
           <Radio value={3} className="text-white">3</Radio>
@@ -184,7 +228,7 @@ function GenerationSettings(props: Props) {
         <Select
           className="w-[65%]"
           defaultValue={difficulty}
-          onChange={handleDifficulty}
+          onChange={onDifficultyChange}
           options={[
             {
               value: 1, label:
@@ -225,8 +269,18 @@ function GenerationSettings(props: Props) {
           </div>
         </div>
         <Slider range marks={propositionsMarks} step={1} defaultValue={numberOfChoices} min={2} max={8} onChange={(values: [number, number]) => {
-          handleNumberOfChoices(values);
+          onNumberOfChoicesChange(values);
         }} railStyle={{ backgroundColor: "white" }} trackStyle={[{ backgroundColor: "#15CC2E" }]} className="mt-0" />
+        {
+          isMCQAlreadyGenerated &&
+          <div className="flex gap-3 items-center mb-2 mt-7 justify-center">
+            <Button size="large" type="primary" onClick={() => {
+              setMCQSettings(tempLanguage, tempDifficulty, tempNumberOfQuestions, tempNumberOfChoices)
+            }}>
+              <div className="font-semibold">Regenerate</div>
+            </Button>
+          </div>
+        }
       </div>
     </div>
   )
