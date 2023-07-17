@@ -15,13 +15,12 @@ type Props = {
   handleDifficulty: (difficulty: number) => void;
   numberOfChoices: [number, number];
   handleNumberOfChoices: (numberOfChoices: [number, number]) => void;
-  className: string
   isMCQAlreadyGenerated: boolean
   setMCQSettings: (language: string, difficulty: number, numberOfQuestions: number, numberOfChoices: [number, number]) => void;
 }
 
 function GenerationSettings(props: Props) {
-  const { handleLanguageChange, selectedLanguage, className, difficulty, handleDifficulty, handleNumberOfChoices, handleNumberOfQuestions, setMCQSettings, numberOfChoices, numberOfQuestions, isMCQAlreadyGenerated } = props
+  const { handleLanguageChange, selectedLanguage, difficulty, handleDifficulty, handleNumberOfChoices, handleNumberOfQuestions, setMCQSettings, numberOfChoices, numberOfQuestions, isMCQAlreadyGenerated } = props
 
   const [tempLanguage, setTempLanguage] = useState(selectedLanguage)
   const [tempDifficulty, setTempDifficulty] = useState(difficulty)
@@ -110,7 +109,7 @@ function GenerationSettings(props: Props) {
   }
 
   return (
-    <div className={`bg-white/10 p-3 rounded ${className}`}>
+    <div className="bg-white/10 p-3 rounded w-full">
       <div className="flex justify-center flex-col">
         <div className="flex items-center gap-3">
           <VscSettings size={25} />
