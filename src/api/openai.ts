@@ -7,6 +7,9 @@ export const OPENAI_KEY = JSON.stringify(
 export type QueryType = {
   subject: string;
   language: string;
+  numberOfQuestions: number;
+  difficulty: number;
+  numberOfChoices: number[];
 };
 
 export type Proposition = {
@@ -22,8 +25,10 @@ export type Question = {
 type ChoiceResponse = {
   finish_reason: string;
   index: number;
-  logprobs?: string;
-  text: string;
+  message: {
+    role: string;
+    content: string;
+  };
 };
 
 export type QueryResult = {
@@ -39,6 +44,22 @@ export type QueryResult = {
   };
 };
 
+const difficultyToText = (difficulty: number) => {
+  if (difficulty <= 1) {
+    return "very easy";
+  }
+  if (difficulty === 2) {
+    return "easy";
+  }
+  if (difficulty === 4) {
+    return "hard";
+  }
+  if (difficulty === 5) {
+    return "very hard";
+  }
+  return "average";
+};
+
 const rawResponseToQueryResult = (rawResponse: string) => {
   const queryResult: Question[] = [];
   const questionSplitted = rawResponse.split("[QUESTION]");
@@ -48,8 +69,8 @@ const rawResponseToQueryResult = (rawResponse: string) => {
     const question = questionSplitted[i].split("[GOOD ANSWER]")[0];
     const idGoodAnswer = questionSplitted[i]
       .split("[GOOD ANSWER]")[1]
-      .split("[START CHOICE]")[0];
-    const propositionsSplitted = questionSplitted[i].split("[START CHOICE]");
+      .split("[CHOICE]")[0];
+    const propositionsSplitted = questionSplitted[i].split("[CHOICE]");
     propositionsSplitted.shift();
     for (let j = 0; j < propositionsSplitted.length; j++) {
       propositionsList.push({
@@ -71,79 +92,71 @@ export const generateQuestion = async (
   const data: string = await axios
     .request<QueryResult>({
       method: "POST",
-      url: "https://api.openai.com/v1/completions",
+      url: "https://api.openai.com/v1/chat/completions",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${OPENAI_KEY}`,
       },
       data: {
-        model: "text-davinci-003",
-        prompt: `Act as a teacher. You will write 5 MCQ test questions about ${query?.subject}, in ${query?.language}.
-      You will follow this format for each question: 
-      
-      [QUESTION]
-      Here is the question
-      [GOOD ANSWER]
-      ID OF THE GOOD CHOICE (here 2)
-
-      [START CHOICE]
-      Here is the first choice, which is wrong
-      [START CHOICE]
-      Here is the second choice, which is true
-      [START CHOICE]
-      Here is the third choice, which is wrong
-      [START CHOICE]
-      Here is the fourth choice, which is wrong
-      
-      Here's is an example of 3 MCQ with the subject Paris and the language english:
-      
-      [QUESTION]
-      Which famous landmark in Paris is known as the "Iron Lady"?
-      [GOOD ANSWER]
-      1
-
-      [START CHOICE]
-      The Eiffel Tower
-      [START CHOICE]
-      The Louvre Museum
-      [START CHOICE]
-      Notre-Dame Cathedral
-      [START CHOICE]
-      Arc de Triomphe
-
-
-      [QUESTION]
-      Which river flows through the city of Paris?
-      [GOOD ANSWER]
-      3
-
-      [START CHOICE]
-      Thames River
-      [START CHOICE]
-      Danube River
-      [START CHOICE]
-      Seine River
-      [START CHOICE]
-      Rhine River
-
-      [START QUESTION]
-      Which palace in Paris is home to the French president?
-      [GOOD ANSWER]
-      4
-
-      [START CHOICE]
-      Palace of Versailles
-      [START CHOICE]
-      Palace of the Legion of Honor
-      [START CHOICE]
-      Palais Garnier
-      [START CHOICE]
-      Élysée Palace`,
-        max_tokens: 3500,
-        temperature: 1,
+        model: "gpt-4",
+        messages: [
+          {
+            role: "system",
+            content: `Act as a professional and well skill teacher who have a lots of knowledge about ${query.subject}`,
+          },
+          {
+            role: "user",
+            content: `Write ${query.numberOfQuestions} questions about ${
+              query.subject
+            } in ${
+              query.language
+            }. The questions should be of ${difficultyToText(
+              query.difficulty
+            )} difficulty (${
+              query.difficulty
+            } out of 5, where 1 is very easy, 3 is average, and 5 is very hard level).
+            Follow the provided format, which includes a question, the correct answer's position, and between ${
+              query.numberOfChoices[0]
+            } to ${query.numberOfChoices[1]} choices.
+            Here's an example of the format using two English questions about Paris:
+            
+            [QUESTION]
+            Which famous landmark in Paris is known as the 'Iron Lady'?
+            [GOOD ANSWER]
+            1
+            [CHOICE]
+            The Eiffel Tower
+            [CHOICE]
+            The Louvre Museum
+            [CHOICE]
+            Notre-Dame Cathedral
+            [CHOICE]
+            Arc de Triomphe
+            
+            [QUESTION]
+            Which river flows through the city of Paris?
+            [GOOD ANSWER]
+            3
+            [CHOICE]
+            Thames River
+            [CHOICE]
+            Danube River
+            [CHOICE]
+            Seine River
+            
+            Now, using this format, create ${
+              query.numberOfQuestions
+            } questions about ${query.subject} in ${
+              query.language
+            }. Each question should have between ${
+              query.numberOfChoices[0]
+            } and ${query.numberOfChoices[1]} choices.
+            The answer must always be the right one, and both the choice and the question must be clear and well-written. So make sure you provide the right choice as the right answer.`,
+          },
+        ],
       },
     })
-    .then((result) => result.data.choices[0].text);
+    .then((result) => result.data.choices[0].message.content);
 
   return rawResponseToQueryResult(data);
 };
