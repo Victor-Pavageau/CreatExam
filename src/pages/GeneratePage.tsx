@@ -79,14 +79,14 @@ function GeneratePage() {
       <div className="flex justify-center">
         <div>
           <h1 className="max-w-lg font-semibold text-center mx-auto">
-            Create the MCQ you want.
+            Créez les QCM que vous voulez.
           </h1>
           <div className="flex gap-3">
-            <Input placeholder="Enter the subject of your MCQ" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }} />
+            <Input placeholder="Entrez le sujet de votre QCM" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }} />
             <Button size="large" type="primary" onClick={() => {
               generateMCQ()
             }}>
-              <div className="font-semibold">{questionArray.length < 1 ? "Generate" : "Regenerate"}</div>
+              <div className="font-semibold">{questionArray.length < 1 ? "Générer" : "Regénérer"}</div>
             </Button>
           </div>
         </div>
@@ -101,7 +101,7 @@ function GeneratePage() {
             {
               questionArray.length < 1 ?
                 <div className="flex justify-center mt-10">
-                  <div className="w-[25%] flex justify-center items-center">
+                  <div className="flex justify-center items-center">
                     <GenerationSettings setMCQSettings={setMCQSettings} handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} isMCQAlreadyGenerated={questionArray.length > 1} />
                   </div>
                 </div>

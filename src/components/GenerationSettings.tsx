@@ -1,8 +1,10 @@
-import { Button, Radio, RadioChangeEvent, Select, Slider, Tag } from "antd"
-import { SliderMarks } from "antd/es/slider";
-import { HiLanguage } from "react-icons/hi2"
-import { GiBrain, GiChoice } from "react-icons/gi"
+import { Button, Input, Select, Slider, Upload } from "antd"
+import { InboxOutlined } from '@ant-design/icons';
+import { GiChoice } from "react-icons/gi"
+import { PiBooksDuotone } from "react-icons/pi"
 import { BsQuestionLg } from "react-icons/bs"
+import { BiUpload } from "react-icons/bi"
+import { AiOutlineLink } from "react-icons/ai"
 import { VscSettings } from "react-icons/vsc"
 import { useState } from "react";
 
@@ -26,51 +28,6 @@ function GenerationSettings(props: Props) {
   const [tempDifficulty, setTempDifficulty] = useState(difficulty)
   const [tempNumberOfQuestions, setTempNumberOfQuestions] = useState(numberOfQuestions)
   const [tempNumberOfChoices, setTempNumberOfChoices] = useState(numberOfChoices)
-
-  const propositionsMarks: SliderMarks = {
-    2: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>2</>,
-    },
-    3: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>3</>,
-    },
-    4: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>4</>,
-    },
-    5: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>5</>,
-    },
-    6: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>6</>,
-    },
-    7: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>7</>,
-    },
-    8: {
-      style: {
-        color: '#FFFFFF',
-      },
-      label: <>8</>,
-    },
-  };
 
   const onLanguageChange = (language: string) => {
     if (!isMCQAlreadyGenerated) {
@@ -109,177 +66,122 @@ function GenerationSettings(props: Props) {
   }
 
   return (
-    <div className="bg-white/10 p-3 rounded w-full">
-      <div className="flex justify-center flex-col">
-        <div className="flex items-center gap-3">
-          <VscSettings size={25} />
-          <div className="text-2xl font-semibold">
-            MCQ Settings
+    <div className="w-max min-w-max">
+      <div className="flex items-center gap-3 mb-1">
+        <VscSettings size={23} />
+        <div className="text-xl">
+          Paramètres
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <div className="bg-white rounded w-full border border-solid border-black/20 text-[#999999]">
+          <div className="p-3">
+            <div className="flex gap-2 items-center mb-2">
+              <BsQuestionLg size={22} />
+              <div className="text-lg font-medium">
+                Nombre de questions
+              </div>
+            </div>
+            <div className="mb-4 sm:px-3 md:px-5">
+              <Slider className="mt-0" step={1} defaultValue={5} min={2} max={15} railStyle={{ backgroundColor: "rgba(0,0,0,0.2)" }} />
+            </div>
+            <div className="flex gap-2 items-center mb-2">
+              <PiBooksDuotone size={22} />
+              <div className="text-lg font-medium">
+                Niveau scolaire
+              </div>
+            </div>
+            <div className="mb-4 sm:px-3 md:px-5">
+              <Select
+                className="w-full"
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input: string, option?: { label: string; value: string }) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+                options={[
+                  {
+                    value: 'seconde',
+                    label: 'Seconde générale',
+                  },
+                  {
+                    value: 'premiere',
+                    label: 'Première générale',
+                  },
+                  {
+                    value: 'terminale',
+                    label: 'Terminale',
+                  },
+                  {
+                    value: 'bac1',
+                    label: 'Bac +1',
+                  },
+                  {
+                    value: 'bac2',
+                    label: 'Bac +2',
+                  },
+                  {
+                    value: 'bac3',
+                    label: 'Bac +3',
+                  },
+                  {
+                    value: 'bac4',
+                    label: 'Bac +4',
+                  },
+                  {
+                    value: 'bac5',
+                    label: 'Bac +5',
+                  },
+                ]}
+              />
+            </div>
+            <div className="flex gap-2 items-center mb-2">
+              <GiChoice size={22} />
+              <div className="text-lg font-medium">
+                Nombre de propositions
+              </div>
+            </div>
+            <div className="mb-4 sm:px-3 md:px-5">
+              <Slider className="mt-0" range step={1} defaultValue={numberOfChoices} min={2} max={8} railStyle={{ backgroundColor: "rgba(0,0,0,0.2)" }} trackStyle={[{ backgroundColor: "#15CC2E" }]} onChange={(values: [number, number]) => {
+                onNumberOfChoicesChange(values);
+              }} />
+            </div>
+            <div className="flex gap-2 items-center mb-2">
+              <BiUpload size={22} />
+              <div className="text-lg font-medium">
+                A partir de vos fichiers
+              </div>
+            </div>
+            <div className="mb-4 max-w-xs sm:px-3 md:px-5">
+              <Upload type="drag" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/msword, application/pdf" action="http://google.com">
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <div className="font-normal mx-5">Cliquez ou faites glisser les fichiers dans cette zone pour le téléverser</div>
+              </Upload>
+            </div>
+            <div className="flex gap-2 items-center mb-2">
+              <AiOutlineLink size={22} />
+              <div className="text-lg font-medium">
+                Depuis des sites web
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 sm:px-3 md:px-5">
+              <Input addonBefore="https://" />
+              <Input addonBefore="https://" />
+              <Input addonBefore="https://" />
+            </div>
+            {
+              isMCQAlreadyGenerated &&
+              <div className="flex gap-3 items-center mb-2 mt-7 justify-center">
+                <Button size="large" type="primary" onClick={() => {
+                  setMCQSettings(tempLanguage, tempDifficulty, tempNumberOfQuestions, tempNumberOfChoices)
+                }}>
+                  <div className="font-semibold">Regenerate</div>
+                </Button>
+              </div>
+            }
           </div>
         </div>
-        <div className="flex gap-3 items-center mb-2 mt-10">
-          <HiLanguage size={25} />
-          <div className="text-xl font-medium">
-            Language
-          </div>
-        </div>
-        <Select
-          className="w-[65%]"
-          defaultValue={selectedLanguage}
-          onChange={onLanguageChange}
-          options={[
-            {
-              value: 'english', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/us.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  English
-                </div>
-              </div>
-            },
-            {
-              value: 'french', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/fr.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  French
-                </div>
-              </div>
-            },
-            {
-              value: 'mandarin', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/cn.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  Mandarin
-                </div>
-              </div>
-            },
-            {
-              value: 'spanish', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/es.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  Spanish
-                </div>
-              </div>
-            },
-            {
-              value: 'portuguese', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/pt.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  Portuguese
-                </div>
-              </div>
-            },
-            {
-              value: 'russian', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/ru.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  Russian
-                </div>
-              </div>
-            },
-            {
-              value: 'german', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/de.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  German
-                </div>
-              </div>
-            },
-            {
-              value: 'italian', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/it.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  Italian
-                </div>
-              </div>
-            },
-            {
-              value: 'japanese', label: <div className="flex gap-3 items-center">
-                <img src="https://flagcdn.com/jp.svg" alt="country flag" className="rounded-sm w-8" />
-                <div className="font-semibold">
-                  Japanese
-                </div>
-              </div>
-            },
-          ]}
-        />
-        <div className="flex gap-3 items-center mb-2 mt-7">
-          <BsQuestionLg size={25} />
-          <div className="text-xl font-medium">
-            Number of questions
-          </div>
-        </div>
-        <Radio.Group onChange={
-          (value: RadioChangeEvent) => {
-            onNumberOfQuestionsChange(Number(value.target.value));
-          }
-        } value={numberOfQuestions} className="w-full flex gap-5">
-          <Radio value={3} className="text-white">3</Radio>
-          <Radio value={5} className="text-white">5</Radio>
-          <Radio value={7} className="text-white">7</Radio>
-          <Radio value={10} className="text-white">10</Radio>
-        </Radio.Group>
-        <div className="flex gap-3 items-center mb-2 mt-7">
-          <GiBrain size={25} />
-          <div className="text-xl font-medium">
-            Difficulty
-          </div>
-        </div>
-        <Select
-          className="w-[65%]"
-          defaultValue={difficulty}
-          onChange={onDifficultyChange}
-          options={[
-            {
-              value: 1, label:
-                <Tag color="#66bb6a">
-                  Beginner
-                </Tag>
-            },
-            {
-              value: 2, label:
-                <Tag color="#81c784">
-                  Easy
-                </Tag>
-            },
-            {
-              value: 3, label:
-                <Tag color="#ffb74d">
-                  Average
-                </Tag>
-            },
-            {
-              value: 4, label:
-                <Tag color="#e57373">
-                  Hard
-                </Tag>
-            },
-            {
-              value: 5, label:
-                <Tag color="#f44336">
-                  Expert
-                </Tag>
-            },
-          ]}
-        />
-        <div className="flex gap-3 items-center mb-2 mt-7">
-          <GiChoice size={25} />
-          <div className="text-xl font-medium">
-            Number of choices
-          </div>
-        </div>
-        <Slider range marks={propositionsMarks} step={1} defaultValue={numberOfChoices} min={2} max={8} onChange={(values: [number, number]) => {
-          onNumberOfChoicesChange(values);
-        }} railStyle={{ backgroundColor: "white" }} trackStyle={[{ backgroundColor: "#15CC2E" }]} className="mt-0" />
-        {
-          isMCQAlreadyGenerated &&
-          <div className="flex gap-3 items-center mb-2 mt-7 justify-center">
-            <Button size="large" type="primary" onClick={() => {
-              setMCQSettings(tempLanguage, tempDifficulty, tempNumberOfQuestions, tempNumberOfChoices)
-            }}>
-              <div className="font-semibold">Regenerate</div>
-            </Button>
-          </div>
-        }
       </div>
     </div>
   )
