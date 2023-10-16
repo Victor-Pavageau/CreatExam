@@ -1,41 +1,31 @@
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { tp } from "../routings";
+import TryCreatExamButton from "../components/TryCreatExamButton";
+import YoutubePresentationVideo from "../components/YoutubePresentationVideo";
 
 function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="bg-white">
       <div className="flex justify-center flex-col">
-        <h1 className="max-w-md font-semibold text-center mx-auto">
-          Generative Multiple Choice Questionaries has arrived.
+        <h1 className="max-w-lg font-semibold text-center mx-auto">
+          La génération de questionnaires à choix multiples assistés par IA.
         </h1>
-        <div className="max-w-lg text-gray-400 text-center mx-auto">
-          Unlock your best work with CreatExam AI-powered MCQ generator.
+        <div className="max-w-xl text-gray-400 text-center mx-auto">
+          Débloquez le meilleur de votre travail avec le générateur de QCM CreatExam.
         </div>
         <div className="flex justify-center mt-10">
-          <Button
-            className="border-none flex justify-center items-center"
-            type="primary"
-            size="large"
-            onClick={() => { navigate(tp("/generate")); }}
-          >
-            <div className="bg-transparent">Try CreatExam for free</div>
-          </Button>
+          <TryCreatExamButton />
         </div>
-        <div className="flex justify-center">
-          <iframe
-            className="mt-24 border-0"
-            width="750"
-            height="480"
-            src="https://www.youtube.com/embed/caPaSaXGgG8"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            title="CreatExam presentation" />
+        <div className="w-full flex justify-center">
+          <div className="w-full max-w-3xl px-10 mt-20">
+            <YoutubePresentationVideo />
+          </div>
         </div>
       </div>
-      <div className="flex justify-around mt-24 gap-60">
+      <div className="flex justify-around mt-20 gap-60">
         <div className="flex justify-center items-center flex-col w-full">
           <div className="w-80 ml-auto">
             <h2>
@@ -47,12 +37,12 @@ function HomePage() {
           </div>
         </div>
         <div className="flex justify-start items-center w-full">
-          <div className="w-[60%] bg-white/20 rounded-lg h-full flex justify-center items-center">
+          <div className="w-[60%] bg-gray-300 rounded-xl h-full flex justify-center items-center">
             Demo image
           </div>
         </div>
       </div>
-      <div className="flex justify-around mt-24 gap-60">
+      <div className="flex justify-around mt-20 gap-60">
         <div className="flex justify-center items-center flex-col w-full">
           <div className="w-80 ml-auto">
             <h2>
@@ -64,7 +54,7 @@ function HomePage() {
           </div>
         </div>
         <div className="flex justify-start items-center w-full">
-          <div className="w-[60%] bg-white/20 rounded-lg h-full flex justify-center items-center">
+          <div className="w-[60%] bg-gray-300 rounded-xl h-full flex justify-center items-center">
             Picture of us
           </div>
         </div>
@@ -80,31 +70,24 @@ function HomePage() {
           <div className="bg-transparent">Learn more about us</div>
         </Button>
       </div>
-      <div className="flex justify-center mt-24 text-gray-400">
-        Used by
+      <div className="flex justify-center mt-20 text-gray-400">
+        Utilisé par
       </div>
-      <div className="mt-10 flex justify-center">
-        Partner list
+      <div className="mt-10 flex justify-center text-red-500 text-xl">
+        Liste des partenaires
       </div>
-      <div className="my-24 flex flex-col justify-center items-center">
+      <div className="mt-20 pb-20 flex flex-col justify-center items-center">
         <h1>
-          Ready to dive in?
+          Prêt à essayer?
         </h1>
         <div className="text-gray-400">
-          Create an account now and get <b className="text-white">150 free tokens</b>
+          Créez un compte maintenant et bénéficiez de <b>150 jetons gratuits</b>
         </div>
         <div className="flex justify-center mt-10">
-          <Button
-            className="border-none flex justify-center items-center"
-            type="primary"
-            size="large"
-            onClick={() => { navigate(tp("/generate")); }}
-          >
-            <div className="bg-transparent">Try CreatExam for free</div>
-          </Button>
+          <TryCreatExamButton />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
