@@ -1,11 +1,10 @@
-import { Button, Input, Select, Slider, Upload } from "antd"
+import { Button, Input, InputNumber, Select, Slider, Upload } from "antd"
 import { InboxOutlined } from '@ant-design/icons';
 import { GiChoice } from "react-icons/gi"
 import { PiBooksDuotone } from "react-icons/pi"
 import { BsQuestionLg } from "react-icons/bs"
 import { BiUpload } from "react-icons/bi"
 import { AiOutlineLink } from "react-icons/ai"
-import { VscSettings } from "react-icons/vsc"
 import { useState } from "react";
 
 type Props = {
@@ -67,11 +66,8 @@ function GenerationSettings(props: Props) {
 
   return (
     <div className="w-max min-w-max">
-      <div className="flex items-center gap-3 mb-1">
-        <VscSettings size={23} />
-        <div className="text-xl">
-          Paramètres
-        </div>
+      <div className="text-xl mb-1">
+        Paramètres
       </div>
       <div className="flex justify-center">
         <div className="bg-white rounded w-full border border-solid border-black/20 text-[#999999]">
@@ -83,7 +79,13 @@ function GenerationSettings(props: Props) {
               </div>
             </div>
             <div className="mb-4 sm:px-3 md:px-5">
-              <Slider className="mt-0" step={1} defaultValue={5} min={2} max={15} railStyle={{ backgroundColor: "rgba(0,0,0,0.2)" }} />
+              <Slider className="mt-0" step={1} defaultValue={5} min={2} max={15} styles={{ rail: { backgroundColor: "rgba(0,0,0,0.2)" } }} />
+              <InputNumber
+                min={2}
+                max={15}
+                value={inputValue}
+                onChange={onChange}
+              />
             </div>
             <div className="flex gap-2 items-center mb-2">
               <PiBooksDuotone size={22} />
@@ -141,8 +143,8 @@ function GenerationSettings(props: Props) {
               </div>
             </div>
             <div className="mb-4 sm:px-3 md:px-5">
-              <Slider className="mt-0" range step={1} defaultValue={numberOfChoices} min={2} max={8} railStyle={{ backgroundColor: "rgba(0,0,0,0.2)" }} trackStyle={[{ backgroundColor: "#15CC2E" }]} onChange={(values: [number, number]) => {
-                onNumberOfChoicesChange(values);
+              <Slider className="mt-0" range step={1} defaultValue={numberOfChoices} min={2} max={8} styles={{ rail: { backgroundColor: "rgba(0,0,0,0.2)" }, track: { backgroundColor: "#15CC2E" } }} onChange={(values: number[]) => {
+                onNumberOfChoicesChange([values[0], values[1]]);
               }} />
             </div>
             <div className="flex gap-2 items-center mb-2">
@@ -152,7 +154,7 @@ function GenerationSettings(props: Props) {
               </div>
             </div>
             <div className="mb-4 max-w-xs sm:px-3 md:px-5">
-              <Upload type="drag" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/msword, application/pdf" action="http://google.com">
+              <Upload type="drag" multiple accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/msword, application/pdf" action="http://google.com">
                 <p className="ant-upload-drag-icon">
                   <InboxOutlined />
                 </p>

@@ -100,7 +100,7 @@ function GeneratePage() {
           <>
             {
               questionArray.length < 1 ?
-                <div className="flex justify-center mt-10">
+                <div className="flex justify-center my-10">
                   <div className="flex justify-center items-center">
                     <GenerationSettings setMCQSettings={setMCQSettings} handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} isMCQAlreadyGenerated={questionArray.length > 1} />
                   </div>
