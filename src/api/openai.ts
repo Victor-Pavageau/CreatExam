@@ -1,15 +1,26 @@
+import { UploadFile } from "antd";
 import axios from "axios";
 
 export const OPENAI_KEY = JSON.stringify(
   import.meta.env.VITE_OPENAI_API_KEY
 ).replace(/"/g, "");
 
+export type Settings = {
+  numberOfChoices: number[];
+  numberOfQuestions: number;
+  websitesToParseArray: string[];
+  webBrowsing: boolean;
+  fileArray: UploadFile[];
+  targetedSchoolLevel: {
+    value: string;
+    label: string;
+  };
+};
+
 export type QueryType = {
   subject: string;
-  language: string;
-  numberOfQuestions: number;
-  difficulty: number;
-  numberOfChoices: number[];
+  skillsArray: string[];
+  MCQSettings: Settings;
 };
 
 export type Proposition = {
@@ -42,22 +53,6 @@ export type QueryResult = {
     prompt_tokens: number;
     total_tokens: number;
   };
-};
-
-const difficultyToText = (difficulty: number) => {
-  if (difficulty <= 1) {
-    return "very easy";
-  }
-  if (difficulty === 2) {
-    return "easy";
-  }
-  if (difficulty === 4) {
-    return "hard";
-  }
-  if (difficulty === 5) {
-    return "very hard";
-  }
-  return "average";
 };
 
 const rawResponseToQueryResult = (rawResponse: string) => {
@@ -106,18 +101,8 @@ export const generateQuestion = async (
           },
           {
             role: "user",
-            content: `Write ${query.numberOfQuestions} questions about ${
-              query.subject
-            } in ${
-              query.language
-            }. The questions should be of ${difficultyToText(
-              query.difficulty
-            )} difficulty (${
-              query.difficulty
-            } out of 5, where 1 is very easy, 3 is average, and 5 is very hard level).
-            Follow the provided format, which includes a question, the correct answer's position, and between ${
-              query.numberOfChoices[0]
-            } to ${query.numberOfChoices[1]} choices.
+            content: `Write ${query.MCQSettings.numberOfQuestions} questions about ${query.subject}. The questions should be for  ${query.MCQSettings.targetedSchoolLevel.label} students.
+            Follow the provided format, which includes a question, the correct answer's position, and between ${query.MCQSettings.numberOfChoices[0]} to ${query.MCQSettings.numberOfChoices[1]} choices.
             Here's an example of the format using two English questions about Paris:
             
             [QUESTION]
@@ -144,13 +129,7 @@ export const generateQuestion = async (
             [CHOICE]
             Seine River
             
-            Now, using this format, create ${
-              query.numberOfQuestions
-            } questions about ${query.subject} in ${
-              query.language
-            }. Each question should have between ${
-              query.numberOfChoices[0]
-            } and ${query.numberOfChoices[1]} choices.
+            Now, using this format, create ${query.MCQSettings.numberOfQuestions} questions about ${query.subject} in French. Each question should have between ${query.MCQSettings.numberOfChoices[0]} and ${query.MCQSettings.numberOfChoices[1]} choices.
             The answer must always be the right one, and both the choice and the question must be clear and well-written. So make sure you provide the right choice as the right answer.`,
           },
         ],

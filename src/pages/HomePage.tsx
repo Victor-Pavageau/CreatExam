@@ -11,7 +11,7 @@ function HomePage() {
     <div className="bg-white">
       <div className="flex justify-center flex-col">
         <h1 className="max-w-lg font-semibold text-center mx-auto">
-          La génération de questionnaires à choix multiples assistés par IA.
+          La génération de questionnaires à choix multiples assistée par IA.
         </h1>
         <div className="max-w-xl text-gray-400 text-center mx-auto">
           Débloquez le meilleur de votre travail avec le générateur de QCM CreatExam.

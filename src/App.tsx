@@ -7,7 +7,8 @@ function App() {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        refetchOnReconnect: false
+        refetchOnReconnect: false,
+        refetchOnMount: false,
       }
     }
   });

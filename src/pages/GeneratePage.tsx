@@ -1,32 +1,36 @@
-import { Button, Col, Input, Row, Tooltip } from "antd";
+import { Button, Col, Input, Row, Select, Space, Tooltip } from "antd";
 import { GoPlus } from "react-icons/go";
 import { HiDotsVertical } from "react-icons/hi";
-import { FiEdit3 } from "react-icons/fi";
+import { FiEdit3, FiTrash } from "react-icons/fi";
 import { MdDeleteForever, MdLoop } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
-import { Question } from "../api/openai";
+import { QueryType, Question, Settings } from "../api/openai";
 import { useGenerateQuestion } from "../hooks/useGenerateQuestion";
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import GenerationSettings from "../components/GenerationSettings";
-import { useQueryClient } from "@tanstack/react-query";
+import TextArea from "antd/es/input/TextArea";
+import { bloomLevels, schoolLevels } from "../common/schoolSystem";
 
 function GeneratePage() {
   const [selectedQuestionID, setSelectedQuestionID] = useState(0);
-  const [selectedLanguage, setSelectedLanguage] = useState("english")
-  const [isGenerationLoading, setIsGenerationLoading] = useState(false)
-  const [querySubject, setQuerySubject] = useState<string | undefined>()
-  const [numberOfQuestions, setNumberOfQuestions] = useState(5)
-  const [difficulty, setDifficulty] = useState(3)
-  const [numberOfChoices, setNumberOfChoices] = useState<[number, number]>([3, 5])
-  const [tempInputValue, setTempInputValue] = useState("")
   const [questionArray, setQuestionArray] = useState<Question[]>([])
-  const { data, isLoading } = useGenerateQuestion({ subject: querySubject!, language: selectedLanguage, difficulty, numberOfChoices, numberOfQuestions });
-  const queryClient = useQueryClient()
-
-  const threeDotsLogo = <HiDotsVertical size={20} />;
-  const propositionsLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const [tempMasterLevel, setTempMasterLevel] = useState('1')
+  const [tempTargetedSkill, setTempTargetedSkill] = useState<string>()
+  const [skillsArray, setSkillsArray] = useState<string[]>([])
+  const [subject, setSubject] = useState<string>("")
+  const [generateClicked, setGenerateClicked] = useState(false)
+  const [MCQSettings, setMCQSetting] = useState<Settings>({
+    fileArray: [],
+    numberOfChoices: [3, 5],
+    numberOfQuestions: 5,
+    targetedSchoolLevel: schoolLevels[0],
+    webBrowsing: false,
+    websitesToParseArray: [],
+  });
+  const [query, setQuery] = useState<QueryType>({ subject, skillsArray, MCQSettings })
+  const { data, isLoading } = useGenerateQuestion(query, generateClicked);
 
   useEffect(() => {
     if (data) {
@@ -35,37 +39,19 @@ function GeneratePage() {
   }, [data])
 
   useEffect(() => {
-    if (isLoading === false) {
-      setIsGenerationLoading(false)
-    }
-    if (isLoading === true && questionArray.length > 1) {
-      setIsGenerationLoading(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, questionArray])
+    setQuery({ subject, skillsArray, MCQSettings })
+  }, [subject, skillsArray, MCQSettings])
 
-  const handleLanguageChange = (language: string) => {
-    setSelectedLanguage(language)
+  const maximumSkillsAccepted = 7
+  const threeDotsLogo = <HiDotsVertical size={20} />;
+  const propositionsLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
+  const generateMCQ = () => {
+    setGenerateClicked(true);
   }
 
   const isSelectedQuestion = (questionID: number) => {
     return questionID === selectedQuestionID;
-  }
-
-  const generateMCQ = () => {
-    if (tempInputValue !== querySubject) {
-      setIsGenerationLoading(true)
-    }
-    setQuerySubject(tempInputValue)
-  }
-
-  const setMCQSettings = (language: string, difficulty: number, numberOfQuestions: number, numberOfChoices: [number, number]) => {
-    void queryClient.invalidateQueries({ queryKey: ['generate-question'] });
-    setSelectedLanguage(language);
-    setDifficulty(difficulty);
-    setNumberOfQuestions(numberOfQuestions);
-    setNumberOfChoices(numberOfChoices);
-    setIsGenerationLoading(true)
   }
 
   document.addEventListener("keypress", function (event) {
@@ -76,23 +62,8 @@ function GeneratePage() {
 
   return (
     <>
-      <div className="flex justify-center">
-        <div>
-          <h1 className="max-w-lg font-semibold text-center mx-auto">
-            Créez les QCM que vous voulez.
-          </h1>
-          <div className="flex gap-3">
-            <Input placeholder="Entrez le sujet de votre QCM" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setTempInputValue(e.target.value) }} />
-            <Button size="large" type="primary" onClick={() => {
-              generateMCQ()
-            }}>
-              <div className="font-semibold">{questionArray.length < 1 ? "Générer" : "Regénérer"}</div>
-            </Button>
-          </div>
-        </div>
-      </div>
       {
-        isGenerationLoading ?
+        (isLoading && query !== undefined && generateClicked && query.subject !== undefined && query.subject.length > 0) ?
           <div className="flex justify-center items-center mt-20">
             <Spin indicator={<LoadingOutlined style={{ fontSize: 40 }} spin />} />
           </div>
@@ -100,21 +71,69 @@ function GeneratePage() {
           <>
             {
               questionArray.length < 1 ?
-                <div className="flex justify-center my-10">
-                  <div className="flex justify-center items-center">
-                    <GenerationSettings setMCQSettings={setMCQSettings} handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} isMCQAlreadyGenerated={questionArray.length > 1} />
+                <div className="flex justify-center gap-40 mt-10">
+                  <div className="max-w-2xl w-full">
+                    <h3 className="font-semibold mb-5">
+                      Quel est le sujet de votre QCM ?
+                    </h3>
+                    <div>
+                      <TextArea size="large" value={subject} placeholder="Mathématiques, équations à deux inconnues, théorème de Pythagore" autoSize={{ minRows: 3, maxRows: 3 }} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                        setSubject(e.target.value)
+                      }} />
+                    </div>
+                    <h3 className="font-semibold mt-10 mb-5">
+                      Quelles sont les compétences évaluées ?
+                    </h3>
+                    <Space.Compact className="w-full">
+                      <Select defaultValue={bloomLevels[0].label} options={bloomLevels} onChange={(value: string) => {
+                        setTempMasterLevel(value)
+                      }} />
+                      <Input placeholder="Déterminer si un entier est ou n'est pas multiple ou diviseur d'un autre entier" value={tempTargetedSkill} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setTempTargetedSkill(e.target.value)
+                      }} />
+                      <Button type="primary" className="!bg-white" disabled={skillsArray.length >= maximumSkillsAccepted} ghost onClick={() => {
+                        if (tempMasterLevel !== undefined && tempTargetedSkill !== undefined && tempTargetedSkill.length >= 3 && skillsArray.length <= maximumSkillsAccepted) {
+                          setSkillsArray([...skillsArray, "[" + tempMasterLevel + "] " + tempTargetedSkill]);
+                          setTempTargetedSkill("")
+                        }
+                      }}>Ajouter</Button>
+                    </Space.Compact>
+                    <div className="mt-5">
+                      {
+                        skillsArray.map((skill, id) => (
+                          <div className="flex items-center mb-3" key={nanoid()}>
+                            <Input readOnly value={skill} id={nanoid()} />
+                            <Button type="text" danger onClick={() => {
+                              const tempSkillsArray = skillsArray;
+                              tempSkillsArray.splice(id, 1);
+                              setSkillsArray([...tempSkillsArray]);
+                            }}>
+                              <FiTrash size={17} />
+                            </Button>
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <Button size="large" className="w-full mt-10" type="primary" onClick={() => {
+                      generateMCQ()
+                    }}>
+                      <div className="font-semibold mb-5">Générer le QCM</div>
+                    </Button>
+                  </div>
+                  <div className="flex justify-center">
+                    <GenerationSettings setMCQSetting={setMCQSetting} defaultSettings={MCQSettings} />
                   </div>
                 </div>
                 :
                 <Row className="mt-14 mb-5">
                   <Col span={6}>
                     <div className="flex justify-center">
-                      <div className="bg-white/10 p-3 rounded w-full mx-5">
+                      <div className="p-3 rounded w-full mx-5">
                         <div className="flex justify-center flex-col gap-y-5">
                           {questionArray.map((questionTest, id) => (
                             <div
                               key={nanoid()}
-                              className={`p-5 rounded-md flex gap-3 cursor-pointer ${isSelectedQuestion(id) ? 'border-2 border-solid border-[#15CC2E]' : 'border border-solid border-white/40'}`}
+                              className={`p-5 bg-white rounded-md flex gap-3 cursor-pointer ${isSelectedQuestion(id) ? 'border-2 border-solid border-[#15CC2E]' : 'border-solid border-black/20 border-2'}`}
                               onClick={() => {
                                 setSelectedQuestionID(id);
                               }}
@@ -130,7 +149,7 @@ function GeneratePage() {
                   <Col span={12}>
                     <div className="flex justify-center">
                       <div className="flex justify-center flex-col gap-y-3">
-                        <div className="border-2 border-solid border-white/20 px-5 py-3 rounded-md mb-3 flex justify-between">
+                        <div className="border-3 border-solid border-black/20 px-5 py-3 rounded-md mb-3 bg-white flex justify-between">
                           <div className="flex justify-center items-center text-lg">{questionArray[selectedQuestionID].question}</div>
                           <div className="flex justify-center items-center">
                             <Button
@@ -146,7 +165,7 @@ function GeneratePage() {
                         </div>
                         {
                           questionArray[selectedQuestionID].propositions.map((proposition, id) => (
-                            <div className="border border-solid border-white/20 rounded-md flex flex-row" key={nanoid()}>
+                            <div className="border-2 border-solid border-black/20 bg-white rounded-md flex flex-row" key={nanoid()}>
                               <div className={`m-4 text-lg ${proposition.isGoodAnswer ? "text-[#52c41a]" : "text-[#ff4d4f]"}`}>
                                 {propositionsLetters[id]}
                               </div>
@@ -189,7 +208,7 @@ function GeneratePage() {
                   </Col>
                   <Col span={6} className="ml-auto">
                     <div className="flex justify-center mx-5">
-                      <GenerationSettings setMCQSettings={setMCQSettings} handleLanguageChange={handleLanguageChange} selectedLanguage={selectedLanguage} difficulty={difficulty} handleDifficulty={setDifficulty} handleNumberOfChoices={setNumberOfChoices} handleNumberOfQuestions={setNumberOfQuestions} numberOfChoices={numberOfChoices} numberOfQuestions={numberOfQuestions} isMCQAlreadyGenerated={questionArray.length > 1} />
+                      <GenerationSettings setMCQSetting={setMCQSetting} defaultSettings={MCQSettings} />
                     </div>
                   </Col>
                 </Row >
